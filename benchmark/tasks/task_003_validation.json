@@ -1,0 +1,18 @@
+{
+  "id": "task_003_validation",
+  "title": "Raise on divide by zero",
+  "description": "Fix safe_divide to raise ValueError when denominator is zero.",
+  "target_test": "tests/test_example.py::test_safe_divide_raises_for_zero_denominator",
+  "expected_target_file": "src/example.py",
+  "failing_test_file": "tests/test_example.py",
+  "search_queries": ["safe_divide", "zero", "ValueError"],
+  "relevant_files": ["src/example.py", "tests/test_example.py"],
+  "patch_hints": [
+    {
+      "type": "replace",
+      "file": "src/example.py",
+      "old": "if denominator == 0:\n        return 0",
+      "new": "if denominator == 0:\n        raise ValueError(\"denominator must not be zero\")"
+    }
+  ]
+}

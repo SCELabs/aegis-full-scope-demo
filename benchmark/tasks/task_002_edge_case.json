@@ -1,0 +1,18 @@
+{
+  "id": "task_002_edge_case",
+  "title": "Drop empty parsed tags",
+  "description": "Fix parse_tags to trim whitespace and drop empty entries.",
+  "target_test": "tests/test_example.py::test_parse_tags_trims_and_drops_empty_entries",
+  "expected_target_file": "src/example.py",
+  "failing_test_file": "tests/test_example.py",
+  "search_queries": ["parse_tags", "empty", "trim"],
+  "relevant_files": ["src/example.py", "tests/test_example.py"],
+  "patch_hints": [
+    {
+      "type": "replace",
+      "file": "src/example.py",
+      "old": "return [part for part in csv_tags.split(\",\")]",
+      "new": "return [part.strip() for part in csv_tags.split(\",\") if part.strip()]"
+    }
+  ]
+}

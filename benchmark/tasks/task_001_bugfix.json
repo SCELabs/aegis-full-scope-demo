@@ -1,0 +1,18 @@
+{
+  "id": "task_001_bugfix",
+  "title": "Normalize usernames with underscores",
+  "description": "Fix normalize_username so internal spaces become underscores while still trimming and lowercasing.",
+  "target_test": "tests/test_example.py::test_normalize_username_replaces_spaces_with_underscores",
+  "expected_target_file": "src/example.py",
+  "failing_test_file": "tests/test_example.py",
+  "search_queries": ["normalize_username", "underscores", "spaces"],
+  "relevant_files": ["src/example.py", "tests/test_example.py"],
+  "patch_hints": [
+    {
+      "type": "replace",
+      "file": "src/example.py",
+      "old": "return name.strip().lower().replace(\" \", \"\")",
+      "new": "return \"_\".join(name.strip().lower().split())"
+    }
+  ]
+}

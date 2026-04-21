@@ -1,0 +1,29 @@
+"""Tiny benchmark target repo with intentionally buggy behavior."""
+
+from __future__ import annotations
+
+
+def normalize_username(name: str) -> str:
+    """Normalize user names for ids.
+
+    BUG: spaces are removed instead of converted to underscores.
+    """
+    return name.strip().lower().replace(" ", "")
+
+
+def parse_tags(csv_tags: str) -> list[str]:
+    """Parse comma-separated tags.
+
+    BUG: empty entries and extra spaces are not removed.
+    """
+    return [part for part in csv_tags.split(",")]
+
+
+def safe_divide(numerator: float, denominator: float) -> float:
+    """Divide with explicit validation.
+
+    BUG: zero denominator currently returns 0 instead of raising.
+    """
+    if denominator == 0:
+        return 0
+    return numerator / denominator
