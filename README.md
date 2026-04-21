@@ -27,11 +27,11 @@ This project is intended to be:
 
 ### Aegis control responsibilities
 
-- **RAG scope** (`client.auto().rag(query=..., retrieved_context=..., symptoms=..., severity=..., metadata=...)`): retrieval-control signals (e.g., keep/drop pressure)
-- **LLM scope** (`client.auto().llm(base_prompt=..., symptoms=..., severity=..., input=..., metadata=...)`): prompt/runtime shaping for plan/repair
-- **Step scope** (`client.auto().step(step_name=..., step_input=..., symptoms=..., severity=..., metadata=...)`): loop stabilization (`retry`, `replan`, `continue`, `stop`)
+- **RAG scope** (`client.auto().rag(query=..., retrieved_context=..., symptoms=..., severity=..., metadata=...)`): retrieval-policy shaping and context pressure.
+- **LLM scope** (`client.auto().llm(base_prompt=..., symptoms=..., severity=..., input=..., metadata=...)`): planner runtime shaping (strictness/selection knobs).
+- **Step scope** (`client.auto().step(step_name=..., step_input=..., symptoms=..., severity=..., metadata=...)`): retry-loop policy decisions.
 
-If credentials/SDK are unavailable, fallback control is used and explicitly logged in artifacts (including fallback reason in scope_data).
+If credentials/SDK are unavailable, fallback control is used and explicitly logged in artifacts.
 
 ## Repo layout
 
@@ -39,7 +39,7 @@ If credentials/SDK are unavailable, fallback control is used and explicitly logg
 - `retrieval/`: indexing, ranking, retrieval, context assembly
 - `tools/`: explicit tool boundaries (`file_search`, `file_read`, `file_write`, `patch_apply`, `test_runner`)
 - `aegis_integration/`: scope adapters and mapping logic
-- `benchmark/target_repo/`: tiny Python repo with intentional bugs
+- `benchmark/target_repo/`: tiny Python repo with intentional bugs + distractor files
 - `benchmark/tasks/`: task specs with realistic bugfix objectives
 - `runners/`: baseline, aegis, and comparison scripts
 - `results/`: generated run artifacts
@@ -73,20 +73,34 @@ python main.py all
 
 Each run creates `results/{baseline|aegis}_YYYYMMDD_HHMMSS/` with:
 
-- `summary.json`
-- `task_results.json`
+- `summary.json` (includes per-scope live vs fallback counts)
+- `task_results.json` (includes per-task scope usage through task metrics)
 - `metrics.json`
 
 Per-task artifacts (`tasks/<task_id>/`) include:
 
 - `retrieved_candidates.json`
 - `selected_context.json`
-- `retrieval_diagnostics.json` (candidate ranking, kept/dropped reasons, pre/post Aegis retrieval metadata)
 - `patch.txt`
 - `notes.txt`
 - `aegis_result_rag.json` (Aegis mode)
 - `aegis_result_llm.json` (Aegis mode)
 - `aegis_result_step.json` (Aegis mode)
+
+## Control mapping behavior
+
+- **RAG policy mapping** supports keep-k changes, path boosts, required target/test inclusion, src/test preference, and dedupe aggressiveness.
+- **LLM policy mapping** shapes planner strictness (`strict_old_snippet_match`), max candidate edits, minimal vs broader patch preference, test-context weighting, and repair mode.
+- **Step policy mapping** supports retry/replan/stop plus loop policies (targeted-only reruns, touched-file reread mode, duplicate-read suppression, and retrieval size adjustment on retry).
+
+## Benchmark stress cases now included
+
+Tasks intentionally include:
+
+- distractor files with high lexical overlap (`src/noisy_reference.py`)
+- target-vs-distractor ambiguity
+- retrieval noise and duplication pressure
+- a repair-path task that requires a second attempt (`task_005_support_routing` uses `repair_hints`)
 
 ## Metrics logged
 
@@ -98,6 +112,7 @@ Includes task and run-level metrics for:
 - targeted vs full test runs
 - syntax failures
 - control actions and per-scope action counts
+- per-scope live vs fallback counts
 - retrieval candidates / kept / duplication
 - whether relevant source and failing test files were retrieved
 
@@ -105,10 +120,10 @@ Includes task and run-level metrics for:
 
 This demo shows how runtime control can shape a coding agent’s behavior without owning execution.
 
-It does **not** claim that current Aegis RAG already performs deep retrieval specialization. Instead, it surfaces retrieval evidence to inform future RAG evolution.
+It does **not** claim that current Aegis backend emits a rich workflow DSL for all policies; instead, this repo uses explicit, inspectable mapping logic so new backend actions can be evaluated immediately.
 
 ## Current limitations and TODOs
 
 - Live Aegis SDK calls require reachable backend + credentials.
 - Fallback controls are intentionally simple and marked as fallback in artifacts.
-- Model adapter is deliberately lightweight and deterministic; it now ranks/selects candidate task edits from task+context, but it is still rule-based (not a production planner model).
+- Model adapter is deliberately lightweight for deterministic benchmark iteration; swap with a production model adapter while keeping control boundaries intact.
