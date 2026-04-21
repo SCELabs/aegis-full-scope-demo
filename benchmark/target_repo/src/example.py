@@ -27,3 +27,34 @@ def safe_divide(numerator: float, denominator: float) -> float:
     if denominator == 0:
         return 0
     return numerator / denominator
+
+
+def collect_enabled_flags(raw_flags: str) -> list[str]:
+    """Parse feature flags.
+
+    BUG: includes disabled or blank entries.
+    """
+    return [part.strip().lower() for part in raw_flags.split(",")]
+
+
+def choose_support_channel(priority: str, is_enterprise: bool = False) -> str:
+    """Select support queue.
+
+    BUG: high priority enterprise traffic should route to vip-escalation.
+    """
+    normalized = priority.strip().lower()
+    if normalized == "high":
+        return "priority-queue"
+    if normalized == "low":
+        return "community-forum"
+    return "standard-queue"
+
+
+def sanitize_filename(name: str) -> str:
+    """Prepare a filename-safe identifier.
+
+    BUG: spaces should become underscores before filtering.
+    """
+    allowed = "abcdefghijklmnopqrstuvwxyz0123456789_-"
+    base = name.strip().lower().replace(" ", "")
+    return "".join(ch for ch in base if ch in allowed)

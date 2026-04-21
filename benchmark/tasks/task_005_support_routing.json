@@ -1,0 +1,26 @@
+{
+  "id": "task_005_support_routing",
+  "title": "Escalate enterprise high priority routing",
+  "description": "Fix choose_support_channel so high-priority enterprise traffic routes to vip-escalation.",
+  "target_test": "tests/test_example.py::test_choose_support_channel_escalates_high_enterprise",
+  "expected_target_file": "src/example.py",
+  "failing_test_file": "tests/test_example.py",
+  "search_queries": ["choose_support_channel", "enterprise", "vip", "priority"],
+  "relevant_files": ["src/example.py", "tests/test_example.py", "src/noisy_reference.py"],
+  "patch_hints": [
+    {
+      "type": "replace",
+      "file": "src/noisy_reference.py",
+      "old": "if priority.lower().strip() in {\"critical\", \"high\"}:\n        return \"legacy-priority\"",
+      "new": "if priority.lower().strip() in {\"critical\", \"high\"} and is_enterprise:\n        return \"vip-escalation\""
+    }
+  ],
+  "repair_hints": [
+    {
+      "type": "replace",
+      "file": "src/example.py",
+      "old": "if normalized == \"high\":\n        return \"priority-queue\"",
+      "new": "if normalized == \"high\":\n        return \"vip-escalation\" if is_enterprise else \"priority-queue\""
+    }
+  ]
+}

@@ -45,11 +45,10 @@ def control_rag(payload: dict) -> ScopeResult:
         )
         return _normalize_aegis_result(result, scope="rag")
     except Exception as exc:  # fallback is expected in offline/demo setups
-        context = payload.get("retrieved_context", [])
-        action = {"type": "set_keep_k", "value": 3 if len(context) > 4 else 4}
+        action = {"type": "set_keep_k", "value": 3 if payload.get("candidate_count", 0) > 4 else 4}
         return ScopeResult(
             scope="rag",
-            actions=[action],
+            actions=actions,
             trace=[{"event": "fallback", "reason": str(exc)}],
             metrics={"candidate_count": payload.get("metadata", {}).get("candidate_count", 0)},
             explanation="Fallback rag control: tighten context if candidate set is large.",

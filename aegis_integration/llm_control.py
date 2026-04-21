@@ -47,10 +47,15 @@ def control_llm(payload: dict) -> ScopeResult:
     except Exception as exc:
         return ScopeResult(
             scope="llm",
-            actions=[{"type": "prepend_prompt", "value": "Focus on minimal, test-driven patching.\n"}],
+            actions=[
+                {"type": "prepend_prompt", "value": "Focus on minimal, test-driven patching.\n"},
+                {"type": "strict_old_snippet_match"},
+                {"type": "set_max_candidate_edits", "value": 2},
+                {"type": "set_repair_mode", "value": "conservative"},
+            ],
             trace=[{"event": "fallback", "reason": str(exc)}],
             metrics={"fallback": 1},
             explanation="Fallback llm control: apply conservative patching guidance.",
-            scope_data={"mode": "fallback", "fallback_reason": str(exc)},
+            scope_data={"mode": "fallback"},
             fallback=True,
         )

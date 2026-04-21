@@ -1,0 +1,24 @@
+{
+  "id": "task_004_flags_filter",
+  "title": "Keep only enabled flags",
+  "description": "Fix collect_enabled_flags to keep only enabled:* entries and drop disabled/empty values.",
+  "target_test": "tests/test_example.py::test_collect_enabled_flags_keeps_only_enabled_entries",
+  "expected_target_file": "src/example.py",
+  "failing_test_file": "tests/test_example.py",
+  "search_queries": ["collect_enabled_flags", "enabled", "disabled", "tests"],
+  "relevant_files": ["src/example.py", "tests/test_example.py", "src/noisy_reference.py"],
+  "patch_hints": [
+    {
+      "type": "replace",
+      "file": "src/example.py",
+      "old": "return [part.strip().lower() for part in raw_flags.split(\",\")]",
+      "new": "return [part.strip().lower() for part in raw_flags.split(\",\") if part.strip().lower().startswith(\"enabled:\")]"
+    },
+    {
+      "type": "replace",
+      "file": "src/noisy_reference.py",
+      "old": "return [x.strip() for x in raw_flags.split(\",\")]",
+      "new": "return [x.strip() for x in raw_flags.split(\",\") if x.strip().lower().startswith(\"enabled:\")]"
+    }
+  ]
+}

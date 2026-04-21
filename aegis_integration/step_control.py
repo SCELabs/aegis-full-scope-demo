@@ -51,7 +51,12 @@ def control_step(payload: dict) -> ScopeResult:
         decision = "retry" if attempt < max_attempts else "stop"
         return ScopeResult(
             scope="step",
-            actions=[{"type": "decision", "value": decision}],
+            actions=[
+                {"type": "decision", "value": decision},
+                {"type": "reread_touched_only"},
+                {"type": "suppress_duplicate_reads"},
+                {"type": "rerun_targeted_only"},
+            ],
             trace=[{"event": "fallback", "reason": str(exc)}],
             metrics={"attempt": attempt},
             explanation="Fallback step control based on bounded retries.",

@@ -15,6 +15,7 @@ class TaskSpec:
     search_queries: list[str]
     relevant_files: list[str]
     patch_hints: list[dict]
+    repair_hints: list[dict] = field(default_factory=list)
 
 
 @dataclass
@@ -32,6 +33,8 @@ class TaskMetrics:
     repair_attempts: int = 0
     control_actions_applied: int = 0
     per_scope_action_counts: dict[str, int] = field(default_factory=lambda: {"rag": 0, "llm": 0, "step": 0})
+    per_scope_fallback_counts: dict[str, int] = field(default_factory=lambda: {"rag": 0, "llm": 0, "step": 0})
+    per_scope_live_counts: dict[str, int] = field(default_factory=lambda: {"rag": 0, "llm": 0, "step": 0})
     retrieved_candidate_count: int = 0
     retrieved_kept_count: int = 0
     context_duplication_count: int = 0

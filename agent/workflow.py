@@ -6,7 +6,7 @@ from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
 
-from aegis_integration.control_mapper import llm_prompt_prefix, rag_keep_k_from_actions, step_decision
+from aegis_integration.control_mapper import PlannerPolicy, rag_policy_from_actions, planner_policy_from_llm, step_policy_from_actions
 from aegis_integration.llm_control import control_llm
 from aegis_integration.rag_control import control_rag
 from aegis_integration.step_control import control_step
@@ -14,6 +14,7 @@ from agent.executor import execute_edits
 from agent.planner import ModelAdapter
 from agent.repair import build_repair_edits
 from agent.state import TaskMetrics, TaskResult, TaskSpec
+from retrieval.context_builder import build_context
 from retrieval.retriever import run_retrieval
 from tools.file_read import read_file
 from tools.test_runner import run_pytest
@@ -39,55 +40,6 @@ class WorkflowRunner:
             shutil.rmtree(dst)
         shutil.copytree(src, dst)
         return dst
-
-    def _compact_context_snippets(self, repo_root: Path, paths: list[str], max_chars: int = 220) -> list[str]:
-        snippets: list[str] = []
-        for path in paths:
-            try:
-                text = (repo_root / path).read_text(encoding="utf-8")
-            except Exception:
-                continue
-            compact = " ".join(text.split())[:max_chars]
-            snippets.append(f"{path}: {compact}")
-        return snippets
-
-    def _build_rag_payload(self, task: TaskSpec, retrieval: object, repo_root: Path) -> dict:
-        kept_set = set(retrieval.kept_paths)
-        dropped = [c["path"] for c in retrieval.candidates if c["path"] not in kept_set]
-        query = f"{task.title}. {task.description}. Search focus: {' | '.join(task.search_queries)}"
-        metadata = {
-            "task_id": task.id,
-            "candidate_count": len(retrieval.candidates),
-            "kept_count": len(retrieval.kept_paths),
-            "kept_paths": retrieval.kept_paths,
-            "dropped_paths": dropped,
-            "duplication_count": retrieval.context_duplication_count,
-            "expected_target_file": task.expected_target_file,
-            "failing_test_file": task.failing_test_file,
-            "target_file_in_kept": task.expected_target_file in kept_set,
-            "failing_test_in_kept": task.failing_test_file in kept_set,
-            "candidate_summaries": [
-                {
-                    "path": c["path"],
-                    "score": c["score"],
-                    "hits": c["hits"],
-                    "kept": c["path"] in kept_set,
-                    "reason": "kept_in_top_k" if c["path"] in kept_set else "dropped_by_k_or_dedup",
-                }
-                for c in retrieval.candidates
-            ],
-        }
-        return {
-            "query": query,
-            "retrieved_context": self._compact_context_snippets(repo_root, retrieval.kept_paths),
-            "symptoms": [
-                "retrieval_noise" if dropped else "narrow_context",
-                "missing_target_file" if task.expected_target_file not in kept_set else "target_file_present",
-                "context_duplication" if retrieval.context_duplication_count > 0 else "no_duplication",
-            ],
-            "severity": "high" if task.expected_target_file not in kept_set else "medium",
-            "metadata": metadata,
-        }
 
     def run(self) -> dict:
         stamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
@@ -121,6 +73,9 @@ class WorkflowRunner:
             "mode": "aegis" if self.use_aegis else "baseline",
             "tasks_total": len(task_results),
             "tasks_success": sum(1 for x in task_results if x["success"]),
+            "scope_live_counts": aggregate.per_scope_live_counts,
+            "scope_fallback_counts": aggregate.per_scope_fallback_counts,
+            "used_live_aegis": any(v > 0 for v in aggregate.per_scope_live_counts.values()),
         }
         (run_dir / "task_results.json").write_text(json.dumps(task_results, indent=2), encoding="utf-8")
         (run_dir / "metrics.json").write_text(json.dumps(asdict(aggregate), indent=2), encoding="utf-8")
@@ -133,65 +88,70 @@ class WorkflowRunner:
         repo_root = self._prepare_repo(run_dir, task.id)
         metrics = TaskMetrics()
 
-        retrieval = run_retrieval(repo_root, task.search_queries, keep_k=4)
-        metrics.retrieved_candidate_count = len(retrieval.candidates)
-        metrics.retrieved_kept_count = len(retrieval.kept_paths)
-        metrics.context_duplication_count = retrieval.context_duplication_count
-        metrics.relevant_target_file_retrieved = task.expected_target_file in retrieval.kept_paths
-        metrics.failing_test_file_retrieved = task.failing_test_file in retrieval.kept_paths
+        retrieval = run_retrieval(repo_root, task.search_queries, keep_k=6)
+        rag_payload_pre = self._build_rag_payload(task, retrieval, repo_root)
 
         rag_result = None
-        rag_payload_pre = self._build_rag_payload(task, retrieval, repo_root)
         if self.use_aegis:
-            rag_result = control_rag(rag_payload_pre)
+            rag_result = control_rag({"task_id": task.id, "candidate_count": len(retrieval.candidates), "kept": retrieval.kept_paths})
             keep_k = rag_keep_k_from_actions(rag_result.actions, default_keep_k=4)
             retrieval = run_retrieval(repo_root, task.search_queries, keep_k=keep_k)
             metrics.retrieved_kept_count = len(retrieval.kept_paths)
             metrics.control_actions_applied += len(rag_result.actions)
             metrics.per_scope_action_counts["rag"] += len(rag_result.actions)
+            if rag_result.fallback:
+                metrics.per_scope_fallback_counts["rag"] += 1
+            else:
+                metrics.per_scope_live_counts["rag"] += 1
+            rag_policy = rag_policy_from_actions(
+                rag_result.actions,
+                default_keep_k=4,
+                target_file=task.expected_target_file,
+                failing_test_file=task.failing_test_file,
+            )
             (task_dir / "aegis_result_rag.json").write_text(json.dumps(rag_result.to_dict(), indent=2), encoding="utf-8")
 
-        rag_payload_post = self._build_rag_payload(task, retrieval, repo_root)
-        retrieval_diag = {
-            "pre_aegis": rag_payload_pre,
-            "post_aegis": rag_payload_post,
-            "candidate_ranking": rag_payload_post["metadata"]["candidate_summaries"],
-        }
-        (task_dir / "retrieval_diagnostics.json").write_text(json.dumps(retrieval_diag, indent=2), encoding="utf-8")
         (task_dir / "retrieved_candidates.json").write_text(json.dumps(retrieval.candidates, indent=2), encoding="utf-8")
-        (task_dir / "selected_context.json").write_text(
-            json.dumps({"kept_paths": retrieval.kept_paths, "retrieved_context": rag_payload_post["retrieved_context"]}, indent=2),
-            encoding="utf-8",
-        )
+        (task_dir / "selected_context.json").write_text(json.dumps({"kept_paths": retrieval.kept_paths}, indent=2), encoding="utf-8")
 
         prompt_prefix = ""
         llm_result = None
         if self.use_aegis:
-            llm_payload = {
-                "base_prompt": "Plan a minimal code patch based on retrieval context and failing tests.",
-                "symptoms": ["overspecified_planning"],
-                "severity": "medium",
-                "input": {"task_id": task.id, "context_paths": retrieval.kept_paths, "candidate_count": len(retrieval.candidates)},
-                "metadata": {"task_title": task.title, "target_test": task.target_test},
-            }
-            llm_result = control_llm(llm_payload)
+            llm_result = control_llm({"task_id": task.id, "phase": "plan"})
             prompt_prefix = llm_prompt_prefix(llm_result.actions)
             metrics.control_actions_applied += len(llm_result.actions)
             metrics.per_scope_action_counts["llm"] += len(llm_result.actions)
+            if llm_result.fallback:
+                metrics.per_scope_fallback_counts["llm"] += 1
+            else:
+                metrics.per_scope_live_counts["llm"] += 1
+            planner_policy = planner_policy_from_llm(llm_result.to_dict())
             (task_dir / "aegis_result_llm.json").write_text(json.dumps(llm_result.to_dict(), indent=2), encoding="utf-8")
 
-        plan = self.model.complete_patch_plan(task, retrieval.context, prompt_prefix=prompt_prefix)
+        plan = self.model.complete_patch_plan(task, retrieval.context, policy=planner_policy)
         metrics.llm_calls += 1
         (task_dir / "patch.txt").write_text(json.dumps(plan.edits, indent=2), encoding="utf-8")
 
         touched: set[str] = set()
         read_files: list[str] = []
-
         max_attempts = 2
         success = False
-        notes = []
+        notes: list[str] = []
+        step_policy_log: list[dict] = []
+
         for attempt in range(1, max_attempts + 1):
-            for p in retrieval.kept_paths:
+            read_targets = kept_paths
+            if attempt > 1 and touched:
+                latest_policy = step_policy_log[-1] if step_policy_log else {}
+                reread_mode = latest_policy.get("reread_mode", "all")
+                if reread_mode == "touched":
+                    read_targets = [p for p in kept_paths if p in touched]
+                elif reread_mode == "none":
+                    read_targets = []
+
+            for p in read_targets:
+                if step_policy_log and step_policy_log[-1].get("suppress_duplicate_reads") and p in read_files:
+                    continue
                 _ = read_file(repo_root, p)
                 read_files.append(p)
                 metrics.files_read += 1
@@ -209,45 +169,68 @@ class WorkflowRunner:
             metrics.targeted_test_runs += 1
             if targeted.passed:
                 success = True
-                full = run_pytest(repo_root)
-                metrics.full_test_runs += 1
-                if full.passed:
-                    notes.append("targeted_and_full_tests_passed")
+                require_full = True
+                if step_policy_log:
+                    require_full = step_policy_log[-1].get("require_full_validation", True)
+                if require_full:
+                    full = run_pytest(repo_root)
+                    metrics.full_test_runs += 1
+                    if full.passed:
+                        notes.append("targeted_and_full_tests_passed")
+                    else:
+                        notes.append("targeted_passed_full_failed")
                 else:
-                    notes.append("targeted_passed_full_failed")
+                    notes.append("targeted_passed_full_validation_skipped_by_policy")
                 break
 
             if attempt < max_attempts:
-                decision = "retry"
+                step_policy = step_policy_from_actions([], default="retry")
                 if self.use_aegis:
-                    step_payload = {
-                        "step_name": "repair_attempt",
-                        "step_input": {
-                            "task_id": task.id,
-                            "attempt": attempt,
-                            "max_attempts": max_attempts,
-                            "target_test": task.target_test,
-                        },
-                        "symptoms": ["target_test_failing", "retry_loop"],
-                        "severity": "medium",
-                        "metadata": {"targeted_stdout": targeted.stdout[:200], "targeted_stderr": targeted.stderr[:200]},
-                    }
-                    step_result = control_step(step_payload)
+                    step_result = control_step({"task_id": task.id, "attempt": attempt, "max_attempts": max_attempts})
                     decision = step_decision(step_result.actions)
                     metrics.control_actions_applied += len(step_result.actions)
                     metrics.per_scope_action_counts["step"] += len(step_result.actions)
+                    if step_result.fallback:
+                        metrics.per_scope_fallback_counts["step"] += 1
+                    else:
+                        metrics.per_scope_live_counts["step"] += 1
+                    step_policy = step_policy_from_actions(step_result.actions, default="retry")
                     (task_dir / "aegis_result_step.json").write_text(json.dumps(step_result.to_dict(), indent=2), encoding="utf-8")
-                if decision == "replan":
+
+                if step_policy.retrieval_keep_k_delta != 0:
+                    rag_policy.keep_k = max(1, rag_policy.keep_k + step_policy.retrieval_keep_k_delta)
+                    _, kept_paths, dropped_paths = self._apply_retrieval_policy(task, retrieval, rag_policy)
+
+                step_policy_log.append(
+                    {
+                        "attempt": attempt,
+                        "decision": step_policy.decision,
+                        "run_targeted_only": step_policy.run_targeted_only,
+                        "require_full_validation": step_policy.require_full_validation,
+                        "reread_mode": step_policy.reread_mode,
+                        "suppress_duplicate_reads": step_policy.suppress_duplicate_reads,
+                        "retrieval_keep_k_delta": step_policy.retrieval_keep_k_delta,
+                    }
+                )
+
+                if step_policy.decision == "replan":
                     metrics.replans += 1
-                    plan = self.model.complete_patch_plan(task, retrieval.context, prompt_prefix=prompt_prefix)
+                    plan = self.model.complete_patch_plan(task, retrieval.context, policy=planner_policy)
                     metrics.llm_calls += 1
-                elif decision == "retry":
+                elif step_policy.decision == "retry":
                     metrics.retries += 1
                     metrics.repair_attempts += 1
-                    plan.edits = build_repair_edits(task, last_error=targeted.stdout + targeted.stderr)
+                    plan.edits = build_repair_edits(task, last_error=targeted.stdout + targeted.stderr, repair_mode=planner_policy.repair_mode)
                 else:
-                    notes.append(f"stopped_by_step_control:{decision}")
+                    notes.append(f"stopped_by_step_control:{step_policy.decision}")
                     break
 
+        (task_dir / "step_policy_log.json").write_text(json.dumps(step_policy_log, indent=2), encoding="utf-8")
+        task_scope_usage = {
+            "rag": "fallback" if metrics.per_scope_fallback_counts["rag"] > 0 else "live" if metrics.per_scope_live_counts["rag"] > 0 else "not_called",
+            "llm": "fallback" if metrics.per_scope_fallback_counts["llm"] > 0 else "live" if metrics.per_scope_live_counts["llm"] > 0 else "not_called",
+            "step": "fallback" if metrics.per_scope_fallback_counts["step"] > 0 else "live" if metrics.per_scope_live_counts["step"] > 0 else "not_called",
+        }
+        (task_dir / "scope_usage.json").write_text(json.dumps(task_scope_usage, indent=2), encoding="utf-8")
         (task_dir / "notes.txt").write_text("\n".join(notes) if notes else "no-notes", encoding="utf-8")
         return TaskResult(task_id=task.id, success=success, notes=";".join(notes), repo_root=repo_root, metrics=metrics, artifacts_dir=task_dir)
