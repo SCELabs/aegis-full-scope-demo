@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+from typing import Any
 
 
 @dataclass
@@ -17,21 +18,32 @@ class ScopeResult:
         return asdict(self)
 
 
+def _normalize_aegis_result(raw: Any, scope: str) -> ScopeResult:
+    payload = raw.to_dict() if hasattr(raw, "to_dict") else (raw if isinstance(raw, dict) else {})
+    return ScopeResult(
+        scope=payload.get("scope", scope),
+        actions=payload.get("actions", []),
+        trace=payload.get("trace", []),
+        metrics=payload.get("metrics", {}),
+        explanation=payload.get("explanation", ""),
+        scope_data=payload.get("scope_data", {}),
+        fallback=bool(payload.get("used_fallback", False)),
+    )
+
+
 def control_llm(payload: dict) -> ScopeResult:
     try:
-        from scelabs_aegis import AegisClient  # type: ignore
+        from aegis import AegisClient  # type: ignore
 
         client = AegisClient()
-        raw = client.auto().llm(payload)
-        return ScopeResult(
-            scope="llm",
-            actions=raw.get("actions", []),
-            trace=raw.get("trace", []),
-            metrics=raw.get("metrics", {}),
-            explanation=raw.get("explanation", ""),
-            scope_data=raw.get("scope_data", {}),
-            fallback=False,
+        result = client.auto().llm(
+            base_prompt=payload.get("base_prompt", "Generate a minimal patch plan."),
+            symptoms=payload.get("symptoms", ["overspecified_planning"]),
+            severity=payload.get("severity", "medium"),
+            input=payload.get("input"),
+            metadata=payload.get("metadata", {}),
         )
+        return _normalize_aegis_result(result, scope="llm")
     except Exception as exc:
         return ScopeResult(
             scope="llm",
@@ -39,6 +51,6 @@ def control_llm(payload: dict) -> ScopeResult:
             trace=[{"event": "fallback", "reason": str(exc)}],
             metrics={"fallback": 1},
             explanation="Fallback llm control: apply conservative patching guidance.",
-            scope_data={"mode": "fallback"},
+            scope_data={"mode": "fallback", "fallback_reason": str(exc)},
             fallback=True,
         )

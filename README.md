@@ -27,11 +27,11 @@ This project is intended to be:
 
 ### Aegis control responsibilities
 
-- **RAG scope** (`client.auto().rag(...)`): retrieval-control signals (e.g., keep/drop pressure)
-- **LLM scope** (`client.auto().llm(...)`): prompt/runtime shaping for plan/repair
-- **Step scope** (`client.auto().step(...)`): loop stabilization (`retry`, `replan`, `continue`, `stop`)
+- **RAG scope** (`client.auto().rag(query=..., retrieved_context=..., symptoms=..., severity=..., metadata=...)`): retrieval-control signals (e.g., keep/drop pressure)
+- **LLM scope** (`client.auto().llm(base_prompt=..., symptoms=..., severity=..., input=..., metadata=...)`): prompt/runtime shaping for plan/repair
+- **Step scope** (`client.auto().step(step_name=..., step_input=..., symptoms=..., severity=..., metadata=...)`): loop stabilization (`retry`, `replan`, `continue`, `stop`)
 
-If credentials/SDK are unavailable, fallback control is used and explicitly logged in artifacts.
+If credentials/SDK are unavailable, fallback control is used and explicitly logged in artifacts (including fallback reason in scope_data).
 
 ## Repo layout
 
@@ -81,6 +81,7 @@ Per-task artifacts (`tasks/<task_id>/`) include:
 
 - `retrieved_candidates.json`
 - `selected_context.json`
+- `retrieval_diagnostics.json` (candidate ranking, kept/dropped reasons, pre/post Aegis retrieval metadata)
 - `patch.txt`
 - `notes.txt`
 - `aegis_result_rag.json` (Aegis mode)
@@ -110,4 +111,4 @@ It does **not** claim that current Aegis RAG already performs deep retrieval spe
 
 - Live Aegis SDK calls require reachable backend + credentials.
 - Fallback controls are intentionally simple and marked as fallback in artifacts.
-- Model adapter is deliberately lightweight for deterministic benchmark iteration; swap with a production model adapter while keeping control boundaries intact.
+- Model adapter is deliberately lightweight and deterministic; it now ranks/selects candidate task edits from task+context, but it is still rule-based (not a production planner model).

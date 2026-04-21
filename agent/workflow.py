@@ -40,6 +40,55 @@ class WorkflowRunner:
         shutil.copytree(src, dst)
         return dst
 
+    def _compact_context_snippets(self, repo_root: Path, paths: list[str], max_chars: int = 220) -> list[str]:
+        snippets: list[str] = []
+        for path in paths:
+            try:
+                text = (repo_root / path).read_text(encoding="utf-8")
+            except Exception:
+                continue
+            compact = " ".join(text.split())[:max_chars]
+            snippets.append(f"{path}: {compact}")
+        return snippets
+
+    def _build_rag_payload(self, task: TaskSpec, retrieval: object, repo_root: Path) -> dict:
+        kept_set = set(retrieval.kept_paths)
+        dropped = [c["path"] for c in retrieval.candidates if c["path"] not in kept_set]
+        query = f"{task.title}. {task.description}. Search focus: {' | '.join(task.search_queries)}"
+        metadata = {
+            "task_id": task.id,
+            "candidate_count": len(retrieval.candidates),
+            "kept_count": len(retrieval.kept_paths),
+            "kept_paths": retrieval.kept_paths,
+            "dropped_paths": dropped,
+            "duplication_count": retrieval.context_duplication_count,
+            "expected_target_file": task.expected_target_file,
+            "failing_test_file": task.failing_test_file,
+            "target_file_in_kept": task.expected_target_file in kept_set,
+            "failing_test_in_kept": task.failing_test_file in kept_set,
+            "candidate_summaries": [
+                {
+                    "path": c["path"],
+                    "score": c["score"],
+                    "hits": c["hits"],
+                    "kept": c["path"] in kept_set,
+                    "reason": "kept_in_top_k" if c["path"] in kept_set else "dropped_by_k_or_dedup",
+                }
+                for c in retrieval.candidates
+            ],
+        }
+        return {
+            "query": query,
+            "retrieved_context": self._compact_context_snippets(repo_root, retrieval.kept_paths),
+            "symptoms": [
+                "retrieval_noise" if dropped else "narrow_context",
+                "missing_target_file" if task.expected_target_file not in kept_set else "target_file_present",
+                "context_duplication" if retrieval.context_duplication_count > 0 else "no_duplication",
+            ],
+            "severity": "high" if task.expected_target_file not in kept_set else "medium",
+            "metadata": metadata,
+        }
+
     def run(self) -> dict:
         stamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
         run_dir = self.base_dir / "results" / f"{'aegis' if self.use_aegis else 'baseline'}_{stamp}"
@@ -92,8 +141,9 @@ class WorkflowRunner:
         metrics.failing_test_file_retrieved = task.failing_test_file in retrieval.kept_paths
 
         rag_result = None
+        rag_payload_pre = self._build_rag_payload(task, retrieval, repo_root)
         if self.use_aegis:
-            rag_result = control_rag({"task_id": task.id, "candidate_count": len(retrieval.candidates), "kept": retrieval.kept_paths})
+            rag_result = control_rag(rag_payload_pre)
             keep_k = rag_keep_k_from_actions(rag_result.actions, default_keep_k=4)
             retrieval = run_retrieval(repo_root, task.search_queries, keep_k=keep_k)
             metrics.retrieved_kept_count = len(retrieval.kept_paths)
@@ -101,13 +151,30 @@ class WorkflowRunner:
             metrics.per_scope_action_counts["rag"] += len(rag_result.actions)
             (task_dir / "aegis_result_rag.json").write_text(json.dumps(rag_result.to_dict(), indent=2), encoding="utf-8")
 
+        rag_payload_post = self._build_rag_payload(task, retrieval, repo_root)
+        retrieval_diag = {
+            "pre_aegis": rag_payload_pre,
+            "post_aegis": rag_payload_post,
+            "candidate_ranking": rag_payload_post["metadata"]["candidate_summaries"],
+        }
+        (task_dir / "retrieval_diagnostics.json").write_text(json.dumps(retrieval_diag, indent=2), encoding="utf-8")
         (task_dir / "retrieved_candidates.json").write_text(json.dumps(retrieval.candidates, indent=2), encoding="utf-8")
-        (task_dir / "selected_context.json").write_text(json.dumps({"kept_paths": retrieval.kept_paths}, indent=2), encoding="utf-8")
+        (task_dir / "selected_context.json").write_text(
+            json.dumps({"kept_paths": retrieval.kept_paths, "retrieved_context": rag_payload_post["retrieved_context"]}, indent=2),
+            encoding="utf-8",
+        )
 
         prompt_prefix = ""
         llm_result = None
         if self.use_aegis:
-            llm_result = control_llm({"task_id": task.id, "phase": "plan"})
+            llm_payload = {
+                "base_prompt": "Plan a minimal code patch based on retrieval context and failing tests.",
+                "symptoms": ["overspecified_planning"],
+                "severity": "medium",
+                "input": {"task_id": task.id, "context_paths": retrieval.kept_paths, "candidate_count": len(retrieval.candidates)},
+                "metadata": {"task_title": task.title, "target_test": task.target_test},
+            }
+            llm_result = control_llm(llm_payload)
             prompt_prefix = llm_prompt_prefix(llm_result.actions)
             metrics.control_actions_applied += len(llm_result.actions)
             metrics.per_scope_action_counts["llm"] += len(llm_result.actions)
@@ -153,7 +220,19 @@ class WorkflowRunner:
             if attempt < max_attempts:
                 decision = "retry"
                 if self.use_aegis:
-                    step_result = control_step({"task_id": task.id, "attempt": attempt, "max_attempts": max_attempts})
+                    step_payload = {
+                        "step_name": "repair_attempt",
+                        "step_input": {
+                            "task_id": task.id,
+                            "attempt": attempt,
+                            "max_attempts": max_attempts,
+                            "target_test": task.target_test,
+                        },
+                        "symptoms": ["target_test_failing", "retry_loop"],
+                        "severity": "medium",
+                        "metadata": {"targeted_stdout": targeted.stdout[:200], "targeted_stderr": targeted.stderr[:200]},
+                    }
+                    step_result = control_step(step_payload)
                     decision = step_decision(step_result.actions)
                     metrics.control_actions_applied += len(step_result.actions)
                     metrics.per_scope_action_counts["step"] += len(step_result.actions)
