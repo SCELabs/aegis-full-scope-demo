@@ -1,0 +1,3 @@
+scelabs-aegis
+python-dotenv
+pytest
