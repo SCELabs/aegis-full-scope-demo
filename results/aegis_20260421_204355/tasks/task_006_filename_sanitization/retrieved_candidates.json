@@ -1,0 +1,24 @@
+[
+  {
+    "path": "src/example.py",
+    "score": 4,
+    "hits": [
+      "sanitize_filename",
+      "spaces",
+      "underscores",
+      "filename"
+    ],
+    "policy_score": 17
+  },
+  {
+    "path": "tests/test_example.py",
+    "score": 4,
+    "hits": [
+      "sanitize_filename",
+      "spaces",
+      "underscores",
+      "filename"
+    ],
+    "policy_score": 15
+  }
+]

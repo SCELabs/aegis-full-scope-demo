@@ -1,0 +1,212 @@
+{
+  "pre_aegis": {
+    "query": "Keep only enabled flags. Fix collect_enabled_flags to keep only enabled:* entries and drop disabled/empty values.. Search focus: collect_enabled_flags | enabled | disabled | tests",
+    "retrieved_context": [
+      "tests/test_example.py: \"\"\"Tests for the benchmark target repo.\"\"\" from __future__ import annotations import pytest from src.example import ( choose_support_channel, collect_enabled_flags, normalize_username, parse_tags, safe_divide, sanitize_f",
+      "src/example.py: \"\"\"Tiny benchmark target repo with intentionally buggy behavior.\"\"\" from __future__ import annotations def normalize_username(name: str) -> str: \"\"\"Normalize user names for ids. BUG: spaces are removed instead of convert",
+      "src/noisy_reference.py: \"\"\"Distractor file with high lexical overlap for retrieval stress tests.\"\"\" from __future__ import annotations def choose_support_channel(priority: str, is_enterprise: bool = False) -> str: # This helper intentionally di"
+    ],
+    "symptoms": [
+      "narrow_context",
+      "target_file_present",
+      "context_duplication"
+    ],
+    "severity": "medium",
+    "metadata": {
+      "task_id": "task_004_flags_filter",
+      "candidate_count": 3,
+      "kept_count": 3,
+      "kept_paths": [
+        "tests/test_example.py",
+        "src/example.py",
+        "src/noisy_reference.py"
+      ],
+      "dropped_paths": [],
+      "duplication_count": 10,
+      "expected_target_file": "src/example.py",
+      "failing_test_file": "tests/test_example.py",
+      "target_file_in_kept": true,
+      "failing_test_in_kept": true,
+      "candidate_summaries": [
+        {
+          "path": "tests/test_example.py",
+          "score": 4,
+          "hits": [
+            "collect_enabled_flags",
+            "enabled",
+            "disabled",
+            "tests"
+          ],
+          "kept": true,
+          "reason": "kept_in_top_k"
+        },
+        {
+          "path": "src/example.py",
+          "score": 3,
+          "hits": [
+            "collect_enabled_flags",
+            "enabled",
+            "disabled"
+          ],
+          "kept": true,
+          "reason": "kept_in_top_k"
+        },
+        {
+          "path": "src/noisy_reference.py",
+          "score": 3,
+          "hits": [
+            "collect_enabled_flags",
+            "enabled",
+            "tests"
+          ],
+          "kept": true,
+          "reason": "kept_in_top_k"
+        }
+      ]
+    }
+  },
+  "post_aegis": {
+    "query": "Keep only enabled flags. Fix collect_enabled_flags to keep only enabled:* entries and drop disabled/empty values.. Search focus: collect_enabled_flags | enabled | disabled | tests",
+    "retrieved_context": [
+      "tests/test_example.py: \"\"\"Tests for the benchmark target repo.\"\"\" from __future__ import annotations import pytest from src.example import ( choose_support_channel, collect_enabled_flags, normalize_username, parse_tags, safe_divide, sanitize_f",
+      "src/example.py: \"\"\"Tiny benchmark target repo with intentionally buggy behavior.\"\"\" from __future__ import annotations def normalize_username(name: str) -> str: \"\"\"Normalize user names for ids. BUG: spaces are removed instead of convert",
+      "src/noisy_reference.py: \"\"\"Distractor file with high lexical overlap for retrieval stress tests.\"\"\" from __future__ import annotations def choose_support_channel(priority: str, is_enterprise: bool = False) -> str: # This helper intentionally di"
+    ],
+    "symptoms": [
+      "narrow_context",
+      "target_file_present",
+      "context_duplication"
+    ],
+    "severity": "medium",
+    "metadata": {
+      "task_id": "task_004_flags_filter",
+      "candidate_count": 3,
+      "kept_count": 3,
+      "kept_paths": [
+        "tests/test_example.py",
+        "src/example.py",
+        "src/noisy_reference.py"
+      ],
+      "dropped_paths": [],
+      "duplication_count": 10,
+      "expected_target_file": "src/example.py",
+      "failing_test_file": "tests/test_example.py",
+      "target_file_in_kept": true,
+      "failing_test_in_kept": true,
+      "candidate_summaries": [
+        {
+          "path": "tests/test_example.py",
+          "score": 4,
+          "hits": [
+            "collect_enabled_flags",
+            "enabled",
+            "disabled",
+            "tests"
+          ],
+          "kept": true,
+          "reason": "kept_in_top_k"
+        },
+        {
+          "path": "src/example.py",
+          "score": 3,
+          "hits": [
+            "collect_enabled_flags",
+            "enabled",
+            "disabled"
+          ],
+          "kept": true,
+          "reason": "kept_in_top_k"
+        },
+        {
+          "path": "src/noisy_reference.py",
+          "score": 3,
+          "hits": [
+            "collect_enabled_flags",
+            "enabled",
+            "tests"
+          ],
+          "kept": true,
+          "reason": "kept_in_top_k"
+        }
+      ]
+    }
+  },
+  "retrieval_policy_applied": {
+    "keep_k": 6,
+    "boost_path_substrings": [],
+    "require_target_file": false,
+    "require_failing_test_file": false,
+    "prefer_src": false,
+    "prefer_tests": false,
+    "dedupe_aggressive": false,
+    "expand_retrieval": false,
+    "narrow_retrieval": false,
+    "policy_reasons": []
+  },
+  "pre_control_candidates": [
+    {
+      "path": "tests/test_example.py",
+      "score": 4,
+      "hits": [
+        "collect_enabled_flags",
+        "enabled",
+        "disabled",
+        "tests"
+      ]
+    },
+    {
+      "path": "src/example.py",
+      "score": 3,
+      "hits": [
+        "collect_enabled_flags",
+        "enabled",
+        "disabled"
+      ]
+    },
+    {
+      "path": "src/noisy_reference.py",
+      "score": 3,
+      "hits": [
+        "collect_enabled_flags",
+        "enabled",
+        "tests"
+      ]
+    }
+  ],
+  "post_control_candidates": [
+    {
+      "path": "tests/test_example.py",
+      "score": 4,
+      "hits": [
+        "collect_enabled_flags",
+        "enabled",
+        "disabled",
+        "tests"
+      ]
+    },
+    {
+      "path": "src/example.py",
+      "score": 3,
+      "hits": [
+        "collect_enabled_flags",
+        "enabled",
+        "disabled"
+      ]
+    },
+    {
+      "path": "src/noisy_reference.py",
+      "score": 3,
+      "hits": [
+        "collect_enabled_flags",
+        "enabled",
+        "tests"
+      ]
+    }
+  ],
+  "kept_paths": [
+    "tests/test_example.py",
+    "src/example.py",
+    "src/noisy_reference.py"
+  ],
+  "dropped_paths": []
+}

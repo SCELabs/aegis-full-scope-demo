@@ -1,0 +1,8 @@
+[
+  {
+    "type": "replace",
+    "file": "src/noisy_reference.py",
+    "old": "if priority.lower().strip() in {\"critical\", \"high\"}:\n        return \"legacy-priority\"",
+    "new": "if priority.lower().strip() in {\"critical\", \"high\"} and is_enterprise:\n        return \"vip-escalation\""
+  }
+]

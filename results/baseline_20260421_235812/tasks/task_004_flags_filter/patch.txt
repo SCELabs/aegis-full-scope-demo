@@ -1,0 +1,7 @@
+[
+  {
+    "file": "src/example.py",
+    "old": "return sorted(enabled)",
+    "new": "return enabled"
+  }
+]

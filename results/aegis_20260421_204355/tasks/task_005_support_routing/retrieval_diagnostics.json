@@ -1,0 +1,225 @@
+{
+  "pre_aegis": {
+    "query": "Escalate enterprise high priority routing. Fix choose_support_channel so high-priority enterprise traffic routes to vip-escalation.. Search focus: choose_support_channel | enterprise | vip | priority",
+    "retrieved_context": [
+      "src/example.py: \"\"\"Tiny benchmark target repo with intentionally buggy behavior.\"\"\" from __future__ import annotations def normalize_username(name: str) -> str: \"\"\"Normalize user names for ids. BUG: spaces are removed instead of convert",
+      "src/noisy_reference.py: \"\"\"Distractor file with high lexical overlap for retrieval stress tests.\"\"\" from __future__ import annotations def choose_support_channel(priority: str, is_enterprise: bool = False) -> str: # This helper intentionally di",
+      "tests/test_example.py: \"\"\"Tests for the benchmark target repo.\"\"\" from __future__ import annotations import pytest from src.example import ( choose_support_channel, collect_enabled_flags, normalize_username, parse_tags, safe_divide, sanitize_f"
+    ],
+    "symptoms": [
+      "narrow_context",
+      "target_file_present",
+      "context_duplication"
+    ],
+    "severity": "medium",
+    "metadata": {
+      "task_id": "task_005_support_routing",
+      "candidate_count": 3,
+      "kept_count": 3,
+      "kept_paths": [
+        "src/example.py",
+        "src/noisy_reference.py",
+        "tests/test_example.py"
+      ],
+      "dropped_paths": [],
+      "duplication_count": 10,
+      "expected_target_file": "src/example.py",
+      "failing_test_file": "tests/test_example.py",
+      "target_file_in_kept": true,
+      "failing_test_in_kept": true,
+      "candidate_summaries": [
+        {
+          "path": "src/example.py",
+          "score": 4,
+          "hits": [
+            "choose_support_channel",
+            "enterprise",
+            "vip",
+            "priority"
+          ],
+          "kept": true,
+          "reason": "kept_in_top_k"
+        },
+        {
+          "path": "src/noisy_reference.py",
+          "score": 3,
+          "hits": [
+            "choose_support_channel",
+            "enterprise",
+            "priority"
+          ],
+          "kept": true,
+          "reason": "kept_in_top_k"
+        },
+        {
+          "path": "tests/test_example.py",
+          "score": 3,
+          "hits": [
+            "choose_support_channel",
+            "enterprise",
+            "vip"
+          ],
+          "kept": true,
+          "reason": "kept_in_top_k"
+        }
+      ]
+    }
+  },
+  "post_aegis": {
+    "query": "Escalate enterprise high priority routing. Fix choose_support_channel so high-priority enterprise traffic routes to vip-escalation.. Search focus: choose_support_channel | enterprise | vip | priority",
+    "retrieved_context": [
+      "src/example.py: \"\"\"Tiny benchmark target repo with intentionally buggy behavior.\"\"\" from __future__ import annotations def normalize_username(name: str) -> str: \"\"\"Normalize user names for ids. BUG: spaces are removed instead of convert",
+      "tests/test_example.py: \"\"\"Tests for the benchmark target repo.\"\"\" from __future__ import annotations import pytest from src.example import ( choose_support_channel, collect_enabled_flags, normalize_username, parse_tags, safe_divide, sanitize_f",
+      "src/noisy_reference.py: \"\"\"Distractor file with high lexical overlap for retrieval stress tests.\"\"\" from __future__ import annotations def choose_support_channel(priority: str, is_enterprise: bool = False) -> str: # This helper intentionally di"
+    ],
+    "symptoms": [
+      "narrow_context",
+      "target_file_present",
+      "context_duplication"
+    ],
+    "severity": "medium",
+    "metadata": {
+      "task_id": "task_005_support_routing",
+      "candidate_count": 3,
+      "kept_count": 3,
+      "kept_paths": [
+        "src/example.py",
+        "tests/test_example.py",
+        "src/noisy_reference.py"
+      ],
+      "dropped_paths": [],
+      "duplication_count": 10,
+      "expected_target_file": "src/example.py",
+      "failing_test_file": "tests/test_example.py",
+      "target_file_in_kept": true,
+      "failing_test_in_kept": true,
+      "candidate_summaries": [
+        {
+          "path": "src/example.py",
+          "score": 4,
+          "hits": [
+            "choose_support_channel",
+            "enterprise",
+            "vip",
+            "priority"
+          ],
+          "kept": true,
+          "reason": "kept_in_top_k"
+        },
+        {
+          "path": "tests/test_example.py",
+          "score": 3,
+          "hits": [
+            "choose_support_channel",
+            "enterprise",
+            "vip"
+          ],
+          "kept": true,
+          "reason": "kept_in_top_k"
+        },
+        {
+          "path": "src/noisy_reference.py",
+          "score": 3,
+          "hits": [
+            "choose_support_channel",
+            "enterprise",
+            "priority"
+          ],
+          "kept": true,
+          "reason": "kept_in_top_k"
+        }
+      ]
+    }
+  },
+  "retrieval_policy_applied": {
+    "keep_k": 5,
+    "boost_path_substrings": [
+      "src/example.py",
+      "tests/test_example.py"
+    ],
+    "require_target_file": true,
+    "require_failing_test_file": true,
+    "prefer_src": false,
+    "prefer_tests": false,
+    "dedupe_aggressive": true,
+    "expand_retrieval": false,
+    "narrow_retrieval": false,
+    "policy_reasons": [
+      "set_keep_k:5",
+      "require_target_file",
+      "boost_paths",
+      "require_failing_test_file",
+      "boost_paths",
+      "dedupe_aggressive"
+    ]
+  },
+  "pre_control_candidates": [
+    {
+      "path": "src/example.py",
+      "score": 4,
+      "hits": [
+        "choose_support_channel",
+        "enterprise",
+        "vip",
+        "priority"
+      ]
+    },
+    {
+      "path": "src/noisy_reference.py",
+      "score": 3,
+      "hits": [
+        "choose_support_channel",
+        "enterprise",
+        "priority"
+      ]
+    },
+    {
+      "path": "tests/test_example.py",
+      "score": 3,
+      "hits": [
+        "choose_support_channel",
+        "enterprise",
+        "vip"
+      ]
+    }
+  ],
+  "post_control_candidates": [
+    {
+      "path": "src/example.py",
+      "score": 4,
+      "hits": [
+        "choose_support_channel",
+        "enterprise",
+        "vip",
+        "priority"
+      ],
+      "policy_score": 17
+    },
+    {
+      "path": "tests/test_example.py",
+      "score": 3,
+      "hits": [
+        "choose_support_channel",
+        "enterprise",
+        "vip"
+      ],
+      "policy_score": 14
+    },
+    {
+      "path": "src/noisy_reference.py",
+      "score": 3,
+      "hits": [
+        "choose_support_channel",
+        "enterprise",
+        "priority"
+      ],
+      "policy_score": 3
+    }
+  ],
+  "kept_paths": [
+    "src/example.py",
+    "tests/test_example.py",
+    "src/noisy_reference.py"
+  ],
+  "dropped_paths": []
+}

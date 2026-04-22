@@ -1,18 +1,29 @@
 {
   "id": "task_006_filename_sanitization",
-  "title": "Preserve separators in sanitized filenames",
-  "description": "Fix sanitize_filename so spaces become underscores before filtering characters.",
-  "target_test": "tests/test_example.py::test_sanitize_filename_replaces_spaces_before_filtering",
+  "title": "Normalize filenames with mixed separators",
+  "description": "Filename sanitization should normalize spaces and repeated separators into single hyphens while preserving the file extension.",
+  "target_test": "tests/test_example.py::test_sanitize_filename_collapses_mixed_separators",
   "expected_target_file": "src/example.py",
   "failing_test_file": "tests/test_example.py",
-  "search_queries": ["sanitize_filename", "spaces", "underscores", "filename"],
-  "relevant_files": ["src/example.py", "tests/test_example.py"],
+  "search_queries": ["sanitize filename spaces separators hyphen extension"],
+  "relevant_files": ["src/example.py", "src/noisy_reference.py", "tests/test_example.py"],
   "patch_hints": [
     {
-      "type": "replace",
+      "file": "src/noisy_reference.py",
+      "old": "return str(name).strip().lower().replace(\" \", \"_\")",
+      "new": "return str(name).strip().lower().replace(\" \", \"-\")"
+    },
+    {
       "file": "src/example.py",
-      "old": "base = name.strip().lower().replace(\" \", \"\")",
-      "new": "base = name.strip().lower().replace(\" \", \"_\")"
+      "old": "return cleaned",
+      "new": "return cleaned"
+    }
+  ],
+  "repair_hints": [
+    {
+      "file": "src/example.py",
+      "old": "cleaned = cleaned.replace(\"_\", \"-\")",
+      "new": "while \"__\" in cleaned or \"--\" in cleaned or \"  \" in cleaned:\n        cleaned = cleaned.replace(\"__\", \"_\").replace(\"--\", \"-\").replace(\"  \", \" \")\n    cleaned = cleaned.replace(\"_\", \"-\").replace(\" \", \"-\")"
     }
   ]
 }

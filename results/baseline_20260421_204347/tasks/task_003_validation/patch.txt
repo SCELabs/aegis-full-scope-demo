@@ -1,0 +1,8 @@
+[
+  {
+    "type": "replace",
+    "file": "src/example.py",
+    "old": "if denominator == 0:\n        return 0",
+    "new": "if denominator == 0:\n        raise ValueError(\"denominator must not be zero\")"
+  }
+]

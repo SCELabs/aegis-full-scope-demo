@@ -1,0 +1,34 @@
+{
+  "llm_calls": 6,
+  "retries": 1,
+  "replans": 0,
+  "duplicate_file_inspections": 3,
+  "files_read": 17,
+  "files_edited": 8,
+  "post_success_unnecessary_steps": 0,
+  "targeted_test_runs": 7,
+  "full_test_runs": 6,
+  "syntax_failures": 0,
+  "repair_attempts": 1,
+  "control_actions_applied": 0,
+  "per_scope_action_counts": {
+    "rag": 0,
+    "llm": 0,
+    "step": 0
+  },
+  "per_scope_fallback_counts": {
+    "rag": 0,
+    "llm": 0,
+    "step": 0
+  },
+  "per_scope_live_counts": {
+    "rag": 0,
+    "llm": 0,
+    "step": 0
+  },
+  "retrieved_candidate_count": 14,
+  "retrieved_kept_count": 14,
+  "context_duplication_count": 44,
+  "relevant_target_file_retrieved": true,
+  "failing_test_file_retrieved": true
+}

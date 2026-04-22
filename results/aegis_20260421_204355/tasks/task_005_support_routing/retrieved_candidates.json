@@ -1,0 +1,33 @@
+[
+  {
+    "path": "src/example.py",
+    "score": 4,
+    "hits": [
+      "choose_support_channel",
+      "enterprise",
+      "vip",
+      "priority"
+    ],
+    "policy_score": 17
+  },
+  {
+    "path": "tests/test_example.py",
+    "score": 3,
+    "hits": [
+      "choose_support_channel",
+      "enterprise",
+      "vip"
+    ],
+    "policy_score": 14
+  },
+  {
+    "path": "src/noisy_reference.py",
+    "score": 3,
+    "hits": [
+      "choose_support_channel",
+      "enterprise",
+      "priority"
+    ],
+    "policy_score": 3
+  }
+]

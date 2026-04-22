@@ -32,14 +32,21 @@ class TaskMetrics:
     syntax_failures: int = 0
     repair_attempts: int = 0
     control_actions_applied: int = 0
+
     per_scope_action_counts: dict[str, int] = field(default_factory=lambda: {"rag": 0, "llm": 0, "step": 0})
     per_scope_fallback_counts: dict[str, int] = field(default_factory=lambda: {"rag": 0, "llm": 0, "step": 0})
     per_scope_live_counts: dict[str, int] = field(default_factory=lambda: {"rag": 0, "llm": 0, "step": 0})
+
     retrieved_candidate_count: int = 0
     retrieved_kept_count: int = 0
     context_duplication_count: int = 0
     relevant_target_file_retrieved: bool = False
     failing_test_file_retrieved: bool = False
+
+    first_pass_success: bool = False
+    step_scope_activated: bool = False
+    retrieval_policy_changed_paths: bool = False
+    planner_policy_changed_edit_count: bool = False
 
 
 @dataclass

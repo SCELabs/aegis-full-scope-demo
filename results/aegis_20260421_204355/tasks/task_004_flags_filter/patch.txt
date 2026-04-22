@@ -1,0 +1,14 @@
+[
+  {
+    "type": "replace",
+    "file": "src/example.py",
+    "old": "return [part.strip().lower() for part in raw_flags.split(\",\")]",
+    "new": "return [part.strip().lower() for part in raw_flags.split(\",\") if part.strip().lower().startswith(\"enabled:\")]"
+  },
+  {
+    "type": "replace",
+    "file": "src/noisy_reference.py",
+    "old": "return [x.strip() for x in raw_flags.split(\",\")]",
+    "new": "return [x.strip() for x in raw_flags.split(\",\") if x.strip().lower().startswith(\"enabled:\")]"
+  }
+]

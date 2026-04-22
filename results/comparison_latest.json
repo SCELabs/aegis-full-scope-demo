@@ -1,0 +1,37 @@
+{
+  "baseline_run": "C:/Users/leper/aegis-full-scope-demo/results/baseline_20260421_204347",
+  "aegis_run": "C:/Users/leper/aegis-full-scope-demo/results/aegis_20260421_204355",
+  "success_delta": {
+    "tasks_success": 0,
+    "tasks_total": 0
+  },
+  "scope_live_vs_fallback": {
+    "live": {
+      "rag": 0,
+      "llm": 0,
+      "step": 0
+    },
+    "fallback": {
+      "rag": 6,
+      "llm": 6,
+      "step": 1
+    },
+    "used_live_aegis": false
+  },
+  "control_actions_by_scope": {
+    "rag": 36,
+    "llm": 30,
+    "step": 5
+  },
+  "retrieval_changes": {
+    "kept_delta": 0,
+    "target_file_retrieved_delta": 0,
+    "failing_test_retrieved_delta": 0
+  },
+  "loop_behavior_deltas": {
+    "duplicate_inspection_delta": -3,
+    "retries_delta": 0,
+    "replans_delta": 0,
+    "repairs_delta": 0
+  }
+}

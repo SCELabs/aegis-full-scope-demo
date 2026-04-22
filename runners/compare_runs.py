@@ -1,60 +1,66 @@
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-if ROOT.as_posix() not in sys.path:
-    sys.path.insert(0, ROOT.as_posix())
+
+RESULTS_DIR = Path("results")
 
 
-def latest_run(root: Path, prefix: str) -> Path:
-    candidates = sorted(root.glob(f"{prefix}_*"))
-    if not candidates:
-        raise FileNotFoundError(f"No runs found for {prefix}")
-    return candidates[-1]
+def _latest_run(prefix: str) -> Path:
+    matches = sorted([p for p in RESULTS_DIR.iterdir() if p.is_dir() and p.name.startswith(prefix)])
+    if not matches:
+        raise FileNotFoundError(f"No runs found for prefix: {prefix}")
+    return matches[-1]
 
 
-def load_json(path: Path) -> dict:
+def _load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-if __name__ == "__main__":
-    results_root = Path(__file__).resolve().parents[1] / "results"
-    b = latest_run(results_root, "baseline")
-    a = latest_run(results_root, "aegis")
+def main() -> None:
+    baseline_dir = _latest_run("baseline_")
+    aegis_dir = _latest_run("aegis_")
 
-    b_summary = load_json(b / "summary.json")
-    a_summary = load_json(a / "summary.json")
-    b_metrics = load_json(b / "metrics.json")
-    a_metrics = load_json(a / "metrics.json")
+    baseline_summary = _load_json(baseline_dir / "summary.json")
+    aegis_summary = _load_json(aegis_dir / "summary.json")
+    baseline_metrics = _load_json(baseline_dir / "metrics.json")
+    aegis_metrics = _load_json(aegis_dir / "metrics.json")
 
-    report = {
-        "baseline_run": b.as_posix(),
-        "aegis_run": a.as_posix(),
+    output = {
+        "baseline_run": baseline_dir.as_posix(),
+        "aegis_run": aegis_dir.as_posix(),
         "success_delta": {
-            "tasks_success": a_summary["tasks_success"] - b_summary["tasks_success"],
-            "tasks_total": a_summary["tasks_total"] - b_summary["tasks_total"],
+            "tasks_success": aegis_summary["tasks_success"] - baseline_summary["tasks_success"],
+            "tasks_total": aegis_summary["tasks_total"] - baseline_summary["tasks_total"],
         },
         "scope_live_vs_fallback": {
-            "live": a_metrics.get("per_scope_live_counts", {}),
-            "fallback": a_metrics.get("per_scope_fallback_counts", {}),
-            "used_live_aegis": a_summary.get("used_live_aegis", False),
+            "live": aegis_summary["scope_live_counts"],
+            "fallback": aegis_summary["scope_fallback_counts"],
+            "used_live_aegis": aegis_summary["used_live_aegis"],
         },
-        "control_actions_by_scope": a_metrics.get("per_scope_action_counts", {}),
+        "control_actions_by_scope": aegis_metrics["per_scope_action_counts"],
         "retrieval_changes": {
-            "kept_delta": a_metrics["retrieved_kept_count"] - b_metrics["retrieved_kept_count"],
-            "target_file_retrieved_delta": int(a_metrics["relevant_target_file_retrieved"]) - int(b_metrics["relevant_target_file_retrieved"]),
-            "failing_test_retrieved_delta": int(a_metrics["failing_test_file_retrieved"]) - int(b_metrics["failing_test_file_retrieved"]),
+            "kept_delta": aegis_metrics["retrieved_kept_count"] - baseline_metrics["retrieved_kept_count"],
+            "target_file_retrieved_delta": int(aegis_metrics["relevant_target_file_retrieved"]) - int(baseline_metrics["relevant_target_file_retrieved"]),
+            "failing_test_retrieved_delta": int(aegis_metrics["failing_test_file_retrieved"]) - int(baseline_metrics["failing_test_file_retrieved"]),
+            "retrieval_policy_changed_paths_delta": int(aegis_metrics["retrieval_policy_changed_paths"]) - int(baseline_metrics["retrieval_policy_changed_paths"]),
         },
         "loop_behavior_deltas": {
-            "duplicate_inspection_delta": a_metrics["duplicate_file_inspections"] - b_metrics["duplicate_file_inspections"],
-            "retries_delta": a_metrics["retries"] - b_metrics["retries"],
-            "replans_delta": a_metrics["replans"] - b_metrics["replans"],
-            "repairs_delta": a_metrics["repair_attempts"] - b_metrics["repair_attempts"],
+            "duplicate_inspection_delta": aegis_metrics["duplicate_file_inspections"] - baseline_metrics["duplicate_file_inspections"],
+            "retries_delta": aegis_metrics["retries"] - baseline_metrics["retries"],
+            "replans_delta": aegis_metrics["replans"] - baseline_metrics["replans"],
+            "repairs_delta": aegis_metrics["repair_attempts"] - baseline_metrics["repair_attempts"],
+            "step_scope_activated_delta": int(aegis_metrics["step_scope_activated"]) - int(baseline_metrics["step_scope_activated"]),
+        },
+        "planner_effects": {
+            "first_pass_success_delta": int(aegis_metrics["first_pass_success"]) - int(baseline_metrics["first_pass_success"]),
+            "planner_policy_changed_edit_count_delta": int(aegis_metrics["planner_policy_changed_edit_count"]) - int(baseline_metrics["planner_policy_changed_edit_count"]),
         },
     }
-    out = results_root / "comparison_latest.json"
-    out.write_text(json.dumps(report, indent=2), encoding="utf-8")
-    print(json.dumps(report, indent=2))
+
+    print(json.dumps(output, indent=2))
+
+
+if __name__ == "__main__":
+    main()

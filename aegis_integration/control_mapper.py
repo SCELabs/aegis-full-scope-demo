@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
+from typing import Any
 
 
 @dataclass
@@ -16,7 +17,7 @@ class RetrievalPolicy:
     narrow_retrieval: bool = False
     policy_reasons: list[str] = field(default_factory=list)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -29,27 +30,35 @@ class PlannerPolicy:
     test_context_weight: int = 1
     repair_mode: str = "conservative"
 
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
 
 @dataclass
 class StepPolicy:
     decision: str = "continue"
     run_targeted_only: bool = False
     require_full_validation: bool = True
-    reread_mode: str = "all"  # all|touched|none
+    reread_mode: str = "all"  # all | touched | none
     suppress_duplicate_reads: bool = False
     retrieval_keep_k_delta: int = 0
 
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
 
 def rag_policy_from_actions(
-    actions: list[dict],
+    actions: list[dict[str, Any]],
     default_keep_k: int,
     target_file: str,
     failing_test_file: str,
 ) -> RetrievalPolicy:
     policy = RetrievalPolicy(keep_k=default_keep_k)
+
     for action in actions:
-        action_type = action.get("type")
+        action_type = str(action.get("type", ""))
         value = action.get("value")
+
         if action_type == "set_keep_k" and isinstance(value, int) and value > 0:
             policy.keep_k = value
             policy.policy_reasons.append(f"set_keep_k:{value}")
@@ -83,26 +92,34 @@ def rag_policy_from_actions(
     if not actions:
         policy.policy_reasons.append("no_actions")
 
-    # deterministic safety defaults to keep benchmark stable
-    if target_file and not policy.require_target_file:
+    # Conservative safety defaults for demo stability.
+    if target_file:
         policy.require_target_file = True
-        policy.policy_reasons.append("default_require_target_file")
-    if failing_test_file and not policy.require_failing_test_file:
+    if failing_test_file:
         policy.require_failing_test_file = True
+
+    if policy.require_target_file and "require_target_file" not in policy.policy_reasons:
+        policy.policy_reasons.append("default_require_target_file")
+    if policy.require_failing_test_file and "require_failing_test_file" not in policy.policy_reasons:
         policy.policy_reasons.append("default_require_failing_test_file")
+
     return policy
 
 
-def planner_policy_from_llm(scope_result: dict) -> PlannerPolicy:
-    actions = scope_result.get("actions", [])
-    scope_data = scope_result.get("scope_data", {})
+def planner_policy_from_llm(scope_result: dict[str, Any]) -> PlannerPolicy:
+    actions = scope_result.get("actions", []) or []
+    scope_data = scope_result.get("scope_data", {}) or {}
     runtime_config = scope_data.get("runtime_config", {}) if isinstance(scope_data, dict) else {}
     controlled_prompt = scope_data.get("controlled_prompt", "") if isinstance(scope_data, dict) else ""
 
-    policy = PlannerPolicy(prompt_prefix=controlled_prompt if isinstance(controlled_prompt, str) else "")
+    policy = PlannerPolicy(
+        prompt_prefix=controlled_prompt if isinstance(controlled_prompt, str) else ""
+    )
+
     for action in actions:
-        action_type = action.get("type")
+        action_type = str(action.get("type", ""))
         value = action.get("value")
+
         if action_type == "prepend_prompt" and isinstance(value, str):
             policy.prompt_prefix = value + policy.prompt_prefix
         elif action_type == "strict_old_snippet_match":
@@ -114,7 +131,7 @@ def planner_policy_from_llm(scope_result: dict) -> PlannerPolicy:
         elif action_type == "weight_test_context" and isinstance(value, int):
             policy.test_context_weight = max(1, value)
         elif action_type == "set_repair_mode" and value in {"conservative", "expansive"}:
-            policy.repair_mode = value
+            policy.repair_mode = str(value)
 
     if isinstance(runtime_config, dict):
         if isinstance(runtime_config.get("strict_old_snippet_match"), bool):
@@ -126,28 +143,33 @@ def planner_policy_from_llm(scope_result: dict) -> PlannerPolicy:
         if isinstance(runtime_config.get("test_context_weight"), int):
             policy.test_context_weight = max(1, runtime_config["test_context_weight"])
         if runtime_config.get("repair_mode") in {"conservative", "expansive"}:
-            policy.repair_mode = runtime_config["repair_mode"]
+            policy.repair_mode = str(runtime_config["repair_mode"])
 
     return policy
 
 
-def step_policy_from_actions(actions: list[dict], default: str = "continue") -> StepPolicy:
+def step_policy_from_actions(actions: list[dict[str, Any]], default: str = "continue") -> StepPolicy:
     policy = StepPolicy(decision=default)
+
     for action in actions:
-        action_type = action.get("type")
+        action_type = str(action.get("type", ""))
         value = action.get("value")
+
         if action_type == "decision" and value in {"continue", "retry", "replan", "stop"}:
-            policy.decision = value
+            policy.decision = str(value)
         elif action_type == "rerun_targeted_only":
             policy.run_targeted_only = True
         elif action_type == "skip_full_validation":
             policy.require_full_validation = False
         elif action_type == "reread_touched_only":
             policy.reread_mode = "touched"
+        elif action_type == "reread_none":
+            policy.reread_mode = "none"
         elif action_type == "suppress_duplicate_reads":
             policy.suppress_duplicate_reads = True
         elif action_type == "expand_retrieval_next_attempt":
             policy.retrieval_keep_k_delta = max(policy.retrieval_keep_k_delta, 1)
         elif action_type == "narrow_retrieval_next_attempt":
             policy.retrieval_keep_k_delta = min(policy.retrieval_keep_k_delta, -1)
+
     return policy
