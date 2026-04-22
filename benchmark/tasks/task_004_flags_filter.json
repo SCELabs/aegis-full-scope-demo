@@ -5,7 +5,7 @@
   "target_test": "tests/test_example.py::test_collect_enabled_flags_filters_disabled_and_preserves_order",
   "expected_target_file": "src/example.py",
   "failing_test_file": "tests/test_example.py",
-  "search_queries": ["collect enabled flags preserve order ignore blank sorted output"],
+  "search_queries": ["collect_enabled_flags", "enabled", "disabled", "raw_flags"],
   "relevant_files": ["src/example.py", "src/noisy_reference.py", "tests/test_example.py"],
   "patch_hints": [
     {

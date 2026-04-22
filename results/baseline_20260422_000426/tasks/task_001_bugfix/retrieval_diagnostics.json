@@ -1,0 +1,155 @@
+{
+  "pre_aegis": {
+    "query": "Normalize usernames with underscores. Fix normalize_username so internal spaces become underscores while still trimming and lowercasing.. Search focus: normalize_username | underscores | spaces",
+    "retrieved_context": [
+      "src/example.py: \"\"\"Tiny benchmark target repo with intentionally buggy behavior.\"\"\" from __future__ import annotations def normalize_username(name: str) -> str: \"\"\"Normalize user names for ids. BUG: spaces are removed instead of convert",
+      "tests/test_example.py: from src.example import collect_enabled_flags, route_support_ticket, sanitize_filename def test_collect_enabled_flags_filters_disabled_and_preserves_order(): items = [ {\"name\": \"beta_mode\", \"enabled\": True}, {\"name\": \"da"
+    ],
+    "symptoms": [
+      "narrow_context",
+      "target_file_present",
+      "context_duplication"
+    ],
+    "severity": "medium",
+    "metadata": {
+      "task_id": "task_001_bugfix",
+      "candidate_count": 2,
+      "kept_count": 2,
+      "kept_paths": [
+        "src/example.py",
+        "tests/test_example.py"
+      ],
+      "dropped_paths": [],
+      "duplication_count": 4,
+      "expected_target_file": "src/example.py",
+      "failing_test_file": "tests/test_example.py",
+      "target_file_in_kept": true,
+      "failing_test_in_kept": true,
+      "candidate_summaries": [
+        {
+          "path": "src/example.py",
+          "score": 3,
+          "hits": [
+            "normalize_username",
+            "underscores",
+            "spaces"
+          ],
+          "kept": true,
+          "reason": "kept_in_top_k"
+        },
+        {
+          "path": "tests/test_example.py",
+          "score": 1,
+          "hits": [
+            "spaces"
+          ],
+          "kept": true,
+          "reason": "kept_in_top_k"
+        }
+      ]
+    }
+  },
+  "post_aegis": {
+    "query": "Normalize usernames with underscores. Fix normalize_username so internal spaces become underscores while still trimming and lowercasing.. Search focus: normalize_username | underscores | spaces",
+    "retrieved_context": [
+      "src/example.py: \"\"\"Tiny benchmark target repo with intentionally buggy behavior.\"\"\" from __future__ import annotations def normalize_username(name: str) -> str: \"\"\"Normalize user names for ids. BUG: spaces are removed instead of convert",
+      "tests/test_example.py: from src.example import collect_enabled_flags, route_support_ticket, sanitize_filename def test_collect_enabled_flags_filters_disabled_and_preserves_order(): items = [ {\"name\": \"beta_mode\", \"enabled\": True}, {\"name\": \"da"
+    ],
+    "symptoms": [
+      "narrow_context",
+      "target_file_present",
+      "context_duplication"
+    ],
+    "severity": "medium",
+    "metadata": {
+      "task_id": "task_001_bugfix",
+      "candidate_count": 2,
+      "kept_count": 2,
+      "kept_paths": [
+        "src/example.py",
+        "tests/test_example.py"
+      ],
+      "dropped_paths": [],
+      "duplication_count": 4,
+      "expected_target_file": "src/example.py",
+      "failing_test_file": "tests/test_example.py",
+      "target_file_in_kept": true,
+      "failing_test_in_kept": true,
+      "candidate_summaries": [
+        {
+          "path": "src/example.py",
+          "score": 3,
+          "hits": [
+            "normalize_username",
+            "underscores",
+            "spaces"
+          ],
+          "kept": true,
+          "reason": "kept_in_top_k"
+        },
+        {
+          "path": "tests/test_example.py",
+          "score": 1,
+          "hits": [
+            "spaces"
+          ],
+          "kept": true,
+          "reason": "kept_in_top_k"
+        }
+      ]
+    }
+  },
+  "retrieval_policy_applied": {
+    "keep_k": 6,
+    "boost_path_substrings": [],
+    "require_target_file": false,
+    "require_failing_test_file": false,
+    "prefer_src": false,
+    "prefer_tests": false,
+    "dedupe_aggressive": false,
+    "expand_retrieval": false,
+    "narrow_retrieval": false,
+    "policy_reasons": []
+  },
+  "pre_control_candidates": [
+    {
+      "path": "src/example.py",
+      "score": 3,
+      "hits": [
+        "normalize_username",
+        "underscores",
+        "spaces"
+      ]
+    },
+    {
+      "path": "tests/test_example.py",
+      "score": 1,
+      "hits": [
+        "spaces"
+      ]
+    }
+  ],
+  "post_control_candidates": [
+    {
+      "path": "src/example.py",
+      "score": 3,
+      "hits": [
+        "normalize_username",
+        "underscores",
+        "spaces"
+      ]
+    },
+    {
+      "path": "tests/test_example.py",
+      "score": 1,
+      "hits": [
+        "spaces"
+      ]
+    }
+  ],
+  "kept_paths": [
+    "src/example.py",
+    "tests/test_example.py"
+  ],
+  "dropped_paths": []
+}

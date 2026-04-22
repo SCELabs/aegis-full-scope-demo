@@ -5,7 +5,7 @@
   "target_test": "tests/test_example.py::test_route_support_ticket_escalates_outage_language",
   "expected_target_file": "src/example.py",
   "failing_test_file": "tests/test_example.py",
-  "search_queries": ["route support ticket outage urgent login incident priority"],
+  "search_queries": ["choose_support_channel", "high", "enterprise", "vip-escalation"],
   "relevant_files": ["src/example.py", "src/noisy_reference.py", "tests/test_example.py"],
   "patch_hints": [
     {
