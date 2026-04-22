@@ -1,0 +1,12 @@
+[
+  {
+    "file": "src/noisy_reference.py",
+    "old": "return str(name).strip().lower().replace(\" \", \"_\")",
+    "new": "return str(name).strip().lower().replace(\" \", \"-\")"
+  },
+  {
+    "file": "src/example.py",
+    "old": "return cleaned",
+    "new": "return cleaned"
+  }
+]

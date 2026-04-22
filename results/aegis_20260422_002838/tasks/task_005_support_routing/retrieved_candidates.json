@@ -1,0 +1,24 @@
+[
+  {
+    "path": "src/example.py",
+    "score": 4,
+    "hits": [
+      "choose_support_channel",
+      "high",
+      "enterprise",
+      "vip-escalation"
+    ],
+    "policy_score": 17
+  },
+  {
+    "path": "tests/test_example.py",
+    "score": 4,
+    "hits": [
+      "choose_support_channel",
+      "high",
+      "enterprise",
+      "vip-escalation"
+    ],
+    "policy_score": 15
+  }
+]
