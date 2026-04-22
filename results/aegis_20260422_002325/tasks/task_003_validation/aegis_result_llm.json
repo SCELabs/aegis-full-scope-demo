@@ -1,0 +1,47 @@
+{
+  "scope": "llm",
+  "actions": [
+    {
+      "type": "prepend_prompt",
+      "value": "Focus on minimal, test-driven patching.\n"
+    },
+    {
+      "type": "strict_old_snippet_match"
+    },
+    {
+      "type": "set_max_candidate_edits",
+      "value": 2
+    },
+    {
+      "type": "set_repair_mode",
+      "value": "conservative"
+    },
+    {
+      "type": "weight_test_context",
+      "value": 2
+    }
+  ],
+  "trace": [
+    {
+      "event": "fallback",
+      "reason": "Aegis API returned status 500"
+    }
+  ],
+  "metrics": {
+    "fallback": 1
+  },
+  "explanation": "Fallback llm control: conservative patch selection with stronger test-context weighting.",
+  "scope_data": {
+    "mode": "fallback",
+    "fallback_reason": "Aegis API returned status 500",
+    "runtime_config": {
+      "strict_old_snippet_match": true,
+      "max_candidate_edits": 2,
+      "patch_mode": "minimal",
+      "test_context_weight": 2,
+      "repair_mode": "conservative"
+    },
+    "controlled_prompt": "Focus on minimal, test-driven patching.\n"
+  },
+  "fallback": true
+}

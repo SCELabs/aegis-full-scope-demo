@@ -221,7 +221,8 @@ class WorkflowRunner:
         step_policy_log: list[dict[str, Any]] = []
 
         base_retrieval = run_retrieval(repo_root, task.search_queries, keep_k=6)
-        if not retrieval.candidates:
+
+        if not base_retrieval.candidates:
             notes = ["no_retrieval_candidates"]
             (task_dir / "notes.txt").write_text("\n".join(notes), encoding="utf-8")
             return TaskResult(
@@ -232,6 +233,7 @@ class WorkflowRunner:
                 metrics=metrics,
                 artifacts_dir=task_dir,
             )
+
         rag_payload_pre = self._build_rag_payload(task, base_retrieval, repo_root)
 
         retrieval = base_retrieval
