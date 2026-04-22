@@ -1,0 +1,36 @@
+{
+  "scope": "step",
+  "actions": [
+    {
+      "type": "decision",
+      "value": "retry"
+    },
+    {
+      "type": "reread_touched_only"
+    },
+    {
+      "type": "suppress_duplicate_reads"
+    },
+    {
+      "type": "rerun_targeted_only"
+    },
+    {
+      "type": "skip_full_validation"
+    }
+  ],
+  "trace": [
+    {
+      "event": "fallback",
+      "reason": "Could not connect to the Aegis API."
+    }
+  ],
+  "metrics": {
+    "attempt": 2
+  },
+  "explanation": "Fallback step control based on bounded retries and loop-waste reduction.",
+  "scope_data": {
+    "mode": "fallback",
+    "fallback_reason": "Could not connect to the Aegis API."
+  },
+  "fallback": true
+}

@@ -113,13 +113,15 @@ class StressWorkflowRunner:
                 artifacts_dir=task_dir,
             )
 
-        keep_k = 5
+        keep_k = task.initial_keep_k
         read_history: set[str] = set()
         touched_files: set[str] = set()
         selected_edits: list[dict] = []
         notes: list[str] = []
         retrieval_diag: dict[str, object] = {}
         scope_usage = {"rag": {}, "llm": {}, "step": {}}
+        coordination_log: list[dict[str, object]] = []
+        agent_decisions: list[dict[str, object]] = []
         prior_feedback = ""
         success = False
 
@@ -129,6 +131,7 @@ class StressWorkflowRunner:
                 repo_root=repo_root,
                 use_aegis=self.use_aegis,
                 keep_k=keep_k,
+                attempt=attempt,
                 metrics=metrics,
             )
             retrieval_diag = retriever.diagnostics
@@ -172,6 +175,32 @@ class StressWorkflowRunner:
             if validation.disagreement:
                 metrics.planner_executor_disagreement_count += 1
 
+            agent_decisions.append(
+                {
+                    "attempt": attempt,
+                    "retriever": {
+                        "kept_paths": retriever.retrieval.kept_paths,
+                        "policy": retriever.policy.to_dict(),
+                    },
+                    "planner": {
+                        "selected_hint_ids": planner.selected_hint_ids,
+                        "candidate_scores": planner.candidate_scores,
+                    },
+                    "executor": {
+                        "patch_results": execution.patch_results,
+                        "targeted_test_returncode": execution.targeted_test.returncode,
+                    },
+                    "validator": {
+                        "accepted": validation.accepted,
+                        "rejected": validation.rejected,
+                        "disagreement": validation.disagreement,
+                        "need_broader_retrieval": validation.need_broader_retrieval,
+                        "prefer_replan": validation.prefer_replan,
+                        "feedback": validation.feedback,
+                    },
+                }
+            )
+
             if execution.targeted_test.passed:
                 success = True
                 if attempt == 1:
@@ -183,10 +212,38 @@ class StressWorkflowRunner:
 
             if attempt == 3:
                 notes.append("max_attempts_reached")
+                coordination_log.append(
+                    {
+                        "attempt": attempt,
+                        "decision": "stop",
+                        "feedback": validation.feedback,
+                        "keep_k_before": keep_k,
+                        "keep_k_after": keep_k,
+                        "retrieval_expanded": False,
+                    }
+                )
                 break
 
             prior_feedback = validation.feedback
-            keep_k += 1 if validation.need_broader_retrieval else 0
+            decision = "replan" if validation.prefer_replan else "retry"
+            previous_keep_k = keep_k
+            if validation.need_broader_retrieval:
+                keep_k += 1
+                metrics.retrieval_expansion_count += 1
+            coordination_log.append(
+                {
+                    "attempt": attempt,
+                    "decision": decision,
+                    "feedback": validation.feedback,
+                    "keep_k_before": previous_keep_k,
+                    "keep_k_after": keep_k,
+                    "retrieval_expanded": keep_k > previous_keep_k,
+                }
+            )
+            metrics.coordinator_decision_count += 1
+            if decision == "replan":
+                metrics.replans += 1
+                continue
             metrics.retries += 1
             metrics.repair_attempts += 1
             repair_edits = build_repair_edits(task, validation.feedback)
@@ -206,6 +263,17 @@ class StressWorkflowRunner:
                 if repair_execution.targeted_test.passed:
                     success = True
                     notes.append("repair_succeeded")
+                    metrics.coordinator_decision_count += 1
+                    coordination_log.append(
+                        {
+                            "attempt": attempt,
+                            "decision": "stop",
+                            "reason": "repair_succeeded",
+                            "keep_k_before": keep_k,
+                            "keep_k_after": keep_k,
+                            "retrieval_expanded": False,
+                        }
+                    )
                     break
 
         scope_usage["rag"] = {
@@ -233,6 +301,8 @@ class StressWorkflowRunner:
         (task_dir / "patch.txt").write_text(json.dumps(selected_edits, indent=2), encoding="utf-8")
         (task_dir / "notes.txt").write_text("\n".join(notes) if notes else "no-notes", encoding="utf-8")
         (task_dir / "scope_usage.json").write_text(json.dumps(scope_usage, indent=2), encoding="utf-8")
+        (task_dir / "coordination_log.json").write_text(json.dumps(coordination_log, indent=2), encoding="utf-8")
+        (task_dir / "agent_decisions.json").write_text(json.dumps(agent_decisions, indent=2), encoding="utf-8")
 
         return TaskResult(
             task_id=task.id,

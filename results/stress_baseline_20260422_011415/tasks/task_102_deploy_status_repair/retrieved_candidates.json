@@ -1,0 +1,30 @@
+[
+  {
+    "path": "tests/test_stress_cases.py",
+    "score": 4,
+    "hits": [
+      "render_deploy_status",
+      "failed_checks",
+      "needs-repair",
+      "deploy"
+    ]
+  },
+  {
+    "path": "src/config_reference.py",
+    "score": 3,
+    "hits": [
+      "render_deploy_status",
+      "failed_checks",
+      "deploy"
+    ]
+  },
+  {
+    "path": "src/service.py",
+    "score": 3,
+    "hits": [
+      "render_deploy_status",
+      "failed_checks",
+      "deploy"
+    ]
+  }
+]

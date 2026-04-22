@@ -1,0 +1,52 @@
+{
+  "id": "task_106_runbook_expansion",
+  "title": "Expand retrieval before picking the payments incident runbook",
+  "description": "Fix resolve_runbook_slug so prod payments customer-impact incidents use payments-prod-incident. The first retrieval pass should be too narrow and require coordinator-led expansion.",
+  "target_test": "tests/test_stress_cases.py::test_resolve_runbook_slug_expands_to_incident_runbook_for_customer_impact",
+  "expected_target_file": "src/service.py",
+  "failing_test_file": "tests/test_stress_cases.py",
+  "search_queries": [
+    "resolve_runbook_slug",
+    "payments",
+    "prod",
+    "customer"
+  ],
+  "relevant_files": [
+    "src/service.py",
+    "tests/test_stress_cases.py",
+    "src/runbook_reference.py"
+  ],
+  "patch_hints": [
+    {
+      "hint_id": "payments_prod_customer",
+      "type": "replace",
+      "file": "src/service.py",
+      "old": "if normalized_team == \"payments\" and environment == \"prod\":\n        return \"payments-prod\"",
+      "new": "if normalized_team == \"payments\" and environment == \"prod\":\n        return \"payments-prod-customer\" if is_customer_impacting else \"payments-prod\"",
+      "preferred_without_test": true
+    },
+    {
+      "hint_id": "payments_prod_incident",
+      "type": "replace",
+      "file": "src/service.py",
+      "old": "if normalized_team == \"payments\" and environment == \"prod\":\n        return \"payments-prod\"",
+      "new": "if normalized_team == \"payments\" and environment == \"prod\":\n        return \"payments-prod-incident\" if is_customer_impacting else \"payments-prod\"",
+      "requires_test_evidence": true,
+      "is_correct": true
+    }
+  ],
+  "repair_hints": [
+    {
+      "hint_id": "repair_payments_prod_incident",
+      "type": "replace",
+      "file": "src/service.py",
+      "old": "if normalized_team == \"payments\" and environment == \"prod\":\n        return \"payments-prod-customer\" if is_customer_impacting else \"payments-prod\"",
+      "new": "if normalized_team == \"payments\" and environment == \"prod\":\n        return \"payments-prod-incident\" if is_customer_impacting else \"payments-prod\"",
+      "is_correct": true
+    }
+  ],
+  "initial_keep_k": 1,
+  "force_single_edit": true,
+  "disable_required_file_inclusion_until_retry": true,
+  "prefer_replan_after_disagreement": true
+}

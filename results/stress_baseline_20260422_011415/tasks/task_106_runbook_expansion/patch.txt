@@ -1,0 +1,10 @@
+[
+  {
+    "hint_id": "payments_prod_customer",
+    "type": "replace",
+    "file": "src/service.py",
+    "old": "if normalized_team == \"payments\" and environment == \"prod\":\n        return \"payments-prod\"",
+    "new": "if normalized_team == \"payments\" and environment == \"prod\":\n        return \"payments-prod-customer\" if is_customer_impacting else \"payments-prod\"",
+    "preferred_without_test": true
+  }
+]

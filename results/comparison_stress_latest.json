@@ -1,20 +1,23 @@
 {
-  "baseline_run": "results/stress_baseline_20260422_010152",
-  "aegis_run": "results/stress_aegis_20260422_010150",
+  "baseline_run": "results/stress_baseline_20260422_011415",
+  "aegis_run": "results/stress_aegis_20260422_011414",
   "success": {
-    "baseline": 4,
-    "aegis": 4,
-    "delta": 0
+    "baseline": 5,
+    "aegis": 7,
+    "delta": 2
   },
   "stress_loop_metrics": {
-    "first_pass_success_delta": 0,
-    "retries_delta": -2,
-    "replans_delta": 0,
-    "repair_attempts_delta": -2,
-    "duplicate_file_inspections_delta": 0,
-    "step_scope_activation_count_delta": 0,
+    "first_pass_success_baseline": 3,
+    "first_pass_success_aegis": 6,
+    "first_pass_success_delta": 3,
+    "retries_delta": -1,
+    "replans_delta": -3,
+    "repair_attempts_delta": -1,
+    "retrieval_expansion_delta": -3,
+    "duplicate_file_inspections_delta": -9,
+    "step_scope_activation_count_delta": 2,
     "planner_policy_changed_edit_count_delta": 0,
-    "retrieval_policy_changed_paths_delta": 0
+    "retrieval_policy_changed_paths_delta": 1
   },
   "retrieval_coverage": {
     "target_file_retrieved_delta": 0,
@@ -37,15 +40,15 @@
       "step": 0
     },
     "aegis_fallback": {
-      "rag": 4,
-      "llm": 4,
-      "step": 0
+      "rag": 8,
+      "llm": 8,
+      "step": 2
     }
   },
   "multiagent_metrics": {
-    "planner_executor_disagreement_delta": 0,
-    "validator_rejection_delta": -2,
-    "coordinator_decision_delta": 4,
+    "planner_executor_disagreement_delta": -5,
+    "validator_rejection_delta": -6,
+    "coordinator_decision_delta": 1,
     "multiagent_enabled": true
   }
 }

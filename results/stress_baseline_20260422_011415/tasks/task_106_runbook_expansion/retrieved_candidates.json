@@ -1,0 +1,53 @@
+[
+  {
+    "path": "src/runbook_reference.py",
+    "score": 4,
+    "hits": [
+      "resolve_runbook_slug",
+      "payments",
+      "prod",
+      "customer"
+    ]
+  },
+  {
+    "path": "src/service.py",
+    "score": 4,
+    "hits": [
+      "resolve_runbook_slug",
+      "payments",
+      "prod",
+      "customer"
+    ]
+  },
+  {
+    "path": "tests/test_stress_cases.py",
+    "score": 4,
+    "hits": [
+      "resolve_runbook_slug",
+      "payments",
+      "prod",
+      "customer"
+    ]
+  },
+  {
+    "path": "src/config_reference.py",
+    "score": 1,
+    "hits": [
+      "customer"
+    ]
+  },
+  {
+    "path": "src/notification_reference.py",
+    "score": 1,
+    "hits": [
+      "customer"
+    ]
+  },
+  {
+    "path": "src/ownership_notes.py",
+    "score": 1,
+    "hits": [
+      "customer"
+    ]
+  }
+]

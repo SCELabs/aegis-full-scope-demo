@@ -1,0 +1,18 @@
+[
+  {
+    "attempt": 1,
+    "decision": "retry",
+    "feedback": "Patch applied but the targeted test still fails; retry with a repair edit.",
+    "keep_k_before": 5,
+    "keep_k_after": 5,
+    "retrieval_expanded": false
+  },
+  {
+    "attempt": 1,
+    "decision": "stop",
+    "reason": "repair_succeeded",
+    "keep_k_before": 5,
+    "keep_k_after": 5,
+    "retrieval_expanded": false
+  }
+]

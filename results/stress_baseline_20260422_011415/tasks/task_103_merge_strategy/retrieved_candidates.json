@@ -1,0 +1,29 @@
+[
+  {
+    "path": "src/service.py",
+    "score": 4,
+    "hits": [
+      "choose_merge_strategy",
+      "docs-fast-path",
+      "safe-rebase",
+      "README.md"
+    ]
+  },
+  {
+    "path": "tests/test_stress_cases.py",
+    "score": 3,
+    "hits": [
+      "choose_merge_strategy",
+      "docs-fast-path",
+      "README.md"
+    ]
+  },
+  {
+    "path": "src/merge_reference.py",
+    "score": 2,
+    "hits": [
+      "choose_merge_strategy",
+      "safe-rebase"
+    ]
+  }
+]

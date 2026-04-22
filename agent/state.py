@@ -16,6 +16,10 @@ class TaskSpec:
     relevant_files: list[str]
     patch_hints: list[dict]
     repair_hints: list[dict] = field(default_factory=list)
+    initial_keep_k: int = 5
+    force_single_edit: bool = False
+    disable_required_file_inclusion_until_retry: bool = False
+    prefer_replan_after_disagreement: bool = False
 
 
 @dataclass
@@ -51,6 +55,7 @@ class TaskMetrics:
     planner_executor_disagreement_count: int = 0
     validator_rejection_count: int = 0
     coordinator_decision_count: int = 0
+    retrieval_expansion_count: int = 0
 
 
 @dataclass

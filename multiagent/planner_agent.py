@@ -131,6 +131,8 @@ def choose_plan(
     selected = [pair[0] for pair in ranked[: max(1, planner_policy.max_candidate_edits)] if pair[1]["score"] > 0]
     if not selected:
         selected = [ranked[0][0]]
+    if task.force_single_edit:
+        selected = selected[:1]
 
     baseline_selected = [hint for hint in task.patch_hints[:1]]
     metrics.planner_policy_changed_edit_count = abs(len(selected) - len(baseline_selected))

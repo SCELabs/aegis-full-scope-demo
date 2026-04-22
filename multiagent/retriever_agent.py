@@ -58,7 +58,13 @@ def _build_rag_payload(task: TaskSpec, retrieval: RetrievalOutput, repo_root: Pa
     }
 
 
-def _apply_retrieval_policy(task: TaskSpec, retrieval: RetrievalOutput, policy: RetrievalPolicy) -> tuple[list[dict[str, Any]], list[str], list[str]]:
+def _apply_retrieval_policy(
+    task: TaskSpec,
+    retrieval: RetrievalOutput,
+    policy: RetrievalPolicy,
+    *,
+    allow_required_inclusion: bool,
+) -> tuple[list[dict[str, Any]], list[str], list[str]]:
     candidates = [dict(c) for c in retrieval.candidates]
     for candidate in candidates:
         path = str(candidate["path"])
@@ -88,9 +94,9 @@ def _apply_retrieval_policy(task: TaskSpec, retrieval: RetrievalOutput, policy: 
         else:
             dropped_paths.append(path)
 
-    if policy.require_target_file and task.expected_target_file and task.expected_target_file not in kept_paths:
+    if allow_required_inclusion and policy.require_target_file and task.expected_target_file and task.expected_target_file not in kept_paths:
         kept_paths.append(task.expected_target_file)
-    if policy.require_failing_test_file and task.failing_test_file and task.failing_test_file not in kept_paths:
+    if allow_required_inclusion and policy.require_failing_test_file and task.failing_test_file and task.failing_test_file not in kept_paths:
         kept_paths.append(task.failing_test_file)
 
     if policy.dedupe_aggressive:
@@ -114,6 +120,7 @@ def retrieve_with_policy(
     repo_root: Path,
     use_aegis: bool,
     keep_k: int,
+    attempt: int,
     metrics: TaskMetrics,
 ) -> RetrieverDecision:
     base_retrieval = run_retrieval(repo_root, task.search_queries, keep_k=keep_k)
@@ -141,7 +148,13 @@ def retrieve_with_policy(
             target_file=task.expected_target_file,
             failing_test_file=task.failing_test_file,
         )
-        ranked_candidates, kept_paths, dropped_paths = _apply_retrieval_policy(task, base_retrieval, policy)
+        allow_required_inclusion = not (task.disable_required_file_inclusion_until_retry and attempt == 1)
+        ranked_candidates, kept_paths, dropped_paths = _apply_retrieval_policy(
+            task,
+            base_retrieval,
+            policy,
+            allow_required_inclusion=allow_required_inclusion,
+        )
 
     retrieval = RetrievalOutput(
         candidates=ranked_candidates,

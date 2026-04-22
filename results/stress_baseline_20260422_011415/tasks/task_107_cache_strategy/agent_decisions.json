@@ -1,0 +1,188 @@
+[
+  {
+    "attempt": 1,
+    "retriever": {
+      "kept_paths": [
+        "src/cache_reference.py",
+        "src/service.py",
+        "tests/test_stress_cases.py"
+      ],
+      "policy": {
+        "keep_k": 5,
+        "boost_path_substrings": [],
+        "require_target_file": false,
+        "require_failing_test_file": false,
+        "prefer_src": false,
+        "prefer_tests": false,
+        "dedupe_aggressive": false,
+        "expand_retrieval": false,
+        "narrow_retrieval": false,
+        "policy_reasons": []
+      }
+    },
+    "planner": {
+      "selected_hint_ids": [
+        "snapshot_cache"
+      ],
+      "candidate_scores": [
+        {
+          "hint_id": "snapshot_cache",
+          "file": "src/service.py",
+          "score": 19,
+          "requires_test_evidence": false,
+          "preferred_without_test": true,
+          "is_correct": false
+        },
+        {
+          "hint_id": "snapshot_test_suite_no_cache",
+          "file": "src/service.py",
+          "score": 16,
+          "requires_test_evidence": true,
+          "preferred_without_test": false,
+          "is_correct": true
+        }
+      ]
+    },
+    "executor": {
+      "patch_results": [
+        {
+          "applied": true,
+          "reason": "ok"
+        }
+      ],
+      "targeted_test_returncode": 1
+    },
+    "validator": {
+      "accepted": false,
+      "rejected": true,
+      "disagreement": true,
+      "need_broader_retrieval": true,
+      "prefer_replan": true,
+      "feedback": "Validator rejected the chosen edit; test evidence points to a different patch."
+    }
+  },
+  {
+    "attempt": 2,
+    "retriever": {
+      "kept_paths": [
+        "src/cache_reference.py",
+        "src/service.py",
+        "tests/test_stress_cases.py"
+      ],
+      "policy": {
+        "keep_k": 6,
+        "boost_path_substrings": [],
+        "require_target_file": false,
+        "require_failing_test_file": false,
+        "prefer_src": false,
+        "prefer_tests": false,
+        "dedupe_aggressive": false,
+        "expand_retrieval": false,
+        "narrow_retrieval": false,
+        "policy_reasons": []
+      }
+    },
+    "planner": {
+      "selected_hint_ids": [
+        "snapshot_cache"
+      ],
+      "candidate_scores": [
+        {
+          "hint_id": "snapshot_cache",
+          "file": "src/service.py",
+          "score": 13,
+          "requires_test_evidence": false,
+          "preferred_without_test": true,
+          "is_correct": false
+        },
+        {
+          "hint_id": "snapshot_test_suite_no_cache",
+          "file": "src/service.py",
+          "score": 12,
+          "requires_test_evidence": true,
+          "preferred_without_test": false,
+          "is_correct": true
+        }
+      ]
+    },
+    "executor": {
+      "patch_results": [
+        {
+          "applied": false,
+          "reason": "target_snippet_not_found"
+        }
+      ],
+      "targeted_test_returncode": 1
+    },
+    "validator": {
+      "accepted": false,
+      "rejected": true,
+      "disagreement": true,
+      "need_broader_retrieval": true,
+      "prefer_replan": true,
+      "feedback": "Patch did not apply cleanly; replan with current file state."
+    }
+  },
+  {
+    "attempt": 3,
+    "retriever": {
+      "kept_paths": [
+        "src/cache_reference.py",
+        "src/service.py",
+        "tests/test_stress_cases.py"
+      ],
+      "policy": {
+        "keep_k": 7,
+        "boost_path_substrings": [],
+        "require_target_file": false,
+        "require_failing_test_file": false,
+        "prefer_src": false,
+        "prefer_tests": false,
+        "dedupe_aggressive": false,
+        "expand_retrieval": false,
+        "narrow_retrieval": false,
+        "policy_reasons": []
+      }
+    },
+    "planner": {
+      "selected_hint_ids": [
+        "snapshot_cache"
+      ],
+      "candidate_scores": [
+        {
+          "hint_id": "snapshot_cache",
+          "file": "src/service.py",
+          "score": 13,
+          "requires_test_evidence": false,
+          "preferred_without_test": true,
+          "is_correct": false
+        },
+        {
+          "hint_id": "snapshot_test_suite_no_cache",
+          "file": "src/service.py",
+          "score": 10,
+          "requires_test_evidence": true,
+          "preferred_without_test": false,
+          "is_correct": true
+        }
+      ]
+    },
+    "executor": {
+      "patch_results": [
+        {
+          "applied": false,
+          "reason": "target_snippet_not_found"
+        }
+      ],
+      "targeted_test_returncode": 1
+    },
+    "validator": {
+      "accepted": false,
+      "rejected": true,
+      "disagreement": true,
+      "need_broader_retrieval": true,
+      "prefer_replan": true,
+      "feedback": "Patch did not apply cleanly; replan with current file state."
+    }
+  }
+]

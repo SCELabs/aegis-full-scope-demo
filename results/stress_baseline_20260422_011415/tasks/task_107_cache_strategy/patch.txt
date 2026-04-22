@@ -1,0 +1,11 @@
+[
+  {
+    "hint_id": "snapshot_cache",
+    "type": "replace",
+    "file": "src/service.py",
+    "old": "if normalized == \"snapshot\":\n        return \"streaming-cache\"",
+    "new": "if normalized == \"snapshot\":\n        return \"snapshot-cache\"",
+    "preferred_without_test": true,
+    "force_first_pass_ambiguity": true
+  }
+]

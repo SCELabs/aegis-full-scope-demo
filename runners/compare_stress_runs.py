@@ -18,6 +18,10 @@ def _load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _count_first_pass(task_results: list[dict]) -> int:
+    return sum(1 for task in task_results if task.get("metrics", {}).get("first_pass_success"))
+
+
 def main() -> None:
     baseline_dir = _latest_run("stress_baseline_")
     aegis_dir = _latest_run("stress_aegis_")
@@ -26,6 +30,8 @@ def main() -> None:
     aegis_summary = _load_json(aegis_dir / "summary.json")
     baseline_metrics = _load_json(baseline_dir / "metrics.json")
     aegis_metrics = _load_json(aegis_dir / "metrics.json")
+    baseline_tasks = _load_json(baseline_dir / "task_results.json")
+    aegis_tasks = _load_json(aegis_dir / "task_results.json")
 
     output = {
         "baseline_run": baseline_dir.as_posix(),
@@ -36,10 +42,13 @@ def main() -> None:
             "delta": aegis_summary["tasks_success"] - baseline_summary["tasks_success"],
         },
         "stress_loop_metrics": {
-            "first_pass_success_delta": aegis_metrics["first_pass_success"] - baseline_metrics["first_pass_success"],
+            "first_pass_success_baseline": _count_first_pass(baseline_tasks),
+            "first_pass_success_aegis": _count_first_pass(aegis_tasks),
+            "first_pass_success_delta": _count_first_pass(aegis_tasks) - _count_first_pass(baseline_tasks),
             "retries_delta": aegis_metrics["retries"] - baseline_metrics["retries"],
             "replans_delta": aegis_metrics["replans"] - baseline_metrics["replans"],
             "repair_attempts_delta": aegis_metrics["repair_attempts"] - baseline_metrics["repair_attempts"],
+            "retrieval_expansion_delta": aegis_metrics["retrieval_expansion_count"] - baseline_metrics["retrieval_expansion_count"],
             "duplicate_file_inspections_delta": aegis_metrics["duplicate_file_inspections"] - baseline_metrics["duplicate_file_inspections"],
             "step_scope_activation_count_delta": aegis_metrics["step_scope_activation_count"] - baseline_metrics["step_scope_activation_count"],
             "planner_policy_changed_edit_count_delta": aegis_metrics["planner_policy_changed_edit_count"] - baseline_metrics["planner_policy_changed_edit_count"],

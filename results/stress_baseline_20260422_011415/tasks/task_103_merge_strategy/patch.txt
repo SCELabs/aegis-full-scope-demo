@@ -1,0 +1,10 @@
+[
+  {
+    "hint_id": "repair_docs_first",
+    "type": "replace",
+    "file": "src/service.py",
+    "old": "if base_branch == \"main\":\n        return \"squash\"\n    if docs_only:\n        return \"docs-fast-path\"",
+    "new": "if docs_only:\n        return \"docs-fast-path\"\n    if base_branch == \"main\":\n        return \"safe-rebase\"",
+    "is_correct": true
+  }
+]

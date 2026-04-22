@@ -50,6 +50,7 @@ class StressCoordinator:
         selected_edits: list[dict[str, Any]] = []
         success = False
         step_policy = StepPolicy(decision="retry")
+        step_scope_result: dict[str, Any] | None = None
 
         for attempt in range(1, 4):
             retriever = retrieve_with_policy(
@@ -57,6 +58,7 @@ class StressCoordinator:
                 repo_root=repo_root,
                 use_aegis=self.use_aegis,
                 keep_k=keep_k,
+                attempt=attempt,
                 metrics=metrics,
             )
             retrieval_diag = retriever.diagnostics
@@ -165,6 +167,7 @@ class StressCoordinator:
                         },
                     }
                 )
+                step_scope_result = step_result.to_dict()
                 metrics.control_actions_applied += len(step_result.actions)
                 metrics.per_scope_action_counts["step"] += len(step_result.actions)
                 metrics.step_scope_activated = True
@@ -179,22 +182,30 @@ class StressCoordinator:
                 step_policy.retrieval_keep_k_delta = 1
 
             coordinator_decision = "retry"
-            if validation.disagreement:
+            if validation.disagreement or validation.prefer_replan:
                 coordinator_decision = "replan"
             if self.use_aegis and step_policy.decision in {"retry", "replan", "stop"}:
                 coordinator_decision = step_policy.decision
+                if validation.prefer_replan and coordinator_decision == "retry":
+                    coordinator_decision = "replan"
             elif attempt >= 3:
                 coordinator_decision = "stop"
 
+            previous_keep_k = keep_k
             if validation.need_broader_retrieval or step_policy.retrieval_keep_k_delta > 0:
                 keep_k += max(1, step_policy.retrieval_keep_k_delta or 1)
+                metrics.retrieval_expansion_count += 1
 
             coordination_log.append(
                 {
                     "attempt": attempt,
                     "decision": coordinator_decision,
                     "feedback": validation.feedback,
-                    "keep_k": keep_k,
+                    "keep_k_before": previous_keep_k,
+                    "keep_k_after": keep_k,
+                    "retrieval_expanded": keep_k > previous_keep_k,
+                    "step_policy": step_policy.to_dict(),
+                    "step_scope_result": step_scope_result,
                 }
             )
             metrics.coordinator_decision_count += 1

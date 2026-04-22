@@ -93,6 +93,7 @@ Stress lane:
 - is intended for internal Aegis development and harder failure analysis
 - is more likely to activate step scope, repair loops, retrieval shaping, and validator intervention
 - supports optional multi-agent coordination in `runners/run_aegis_stress.py`
+- includes tasks intentionally designed to force coordinator involvement after failed first passes
 
 Use `STRESS_MULTIAGENT=0` to run the stress Aegis lane without the multi-agent coordinator.
 

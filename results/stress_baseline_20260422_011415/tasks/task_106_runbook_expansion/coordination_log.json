@@ -1,0 +1,26 @@
+[
+  {
+    "attempt": 1,
+    "decision": "replan",
+    "feedback": "Planner selected an ambiguous hint without test evidence; broaden retrieval and replan.",
+    "keep_k_before": 1,
+    "keep_k_after": 2,
+    "retrieval_expanded": true
+  },
+  {
+    "attempt": 2,
+    "decision": "replan",
+    "feedback": "Patch did not apply cleanly; replan with current file state.",
+    "keep_k_before": 2,
+    "keep_k_after": 3,
+    "retrieval_expanded": true
+  },
+  {
+    "attempt": 3,
+    "decision": "stop",
+    "feedback": "Patch did not apply cleanly; replan with current file state.",
+    "keep_k_before": 3,
+    "keep_k_after": 3,
+    "retrieval_expanded": false
+  }
+]

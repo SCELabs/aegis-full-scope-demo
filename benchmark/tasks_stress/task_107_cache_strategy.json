@@ -1,0 +1,51 @@
+{
+  "id": "task_107_cache_strategy",
+  "title": "Use no-cache for snapshot test runs",
+  "description": "Fix choose_cache_strategy so snapshot requests coming from the test suite use no-cache. Source-only reading makes snapshot-cache look plausible, but the failing test wording should drive the correct choice.",
+  "target_test": "tests/test_stress_cases.py::test_choose_cache_strategy_uses_no_cache_for_snapshot_test_runs",
+  "expected_target_file": "src/service.py",
+  "failing_test_file": "tests/test_stress_cases.py",
+  "search_queries": [
+    "choose_cache_strategy",
+    "snapshot",
+    "test_suite",
+    "cache"
+  ],
+  "relevant_files": [
+    "src/service.py",
+    "tests/test_stress_cases.py",
+    "src/cache_reference.py"
+  ],
+  "patch_hints": [
+    {
+      "hint_id": "snapshot_cache",
+      "type": "replace",
+      "file": "src/service.py",
+      "old": "if normalized == \"snapshot\":\n        return \"streaming-cache\"",
+      "new": "if normalized == \"snapshot\":\n        return \"snapshot-cache\"",
+      "preferred_without_test": true,
+      "force_first_pass_ambiguity": true
+    },
+    {
+      "hint_id": "snapshot_test_suite_no_cache",
+      "type": "replace",
+      "file": "src/service.py",
+      "old": "if normalized == \"snapshot\":\n        return \"streaming-cache\"",
+      "new": "if normalized == \"snapshot\":\n        return \"no-cache\" if from_test_suite else \"snapshot-cache\"",
+      "requires_test_evidence": true,
+      "is_correct": true
+    }
+  ],
+  "repair_hints": [
+    {
+      "hint_id": "repair_snapshot_test_suite_no_cache",
+      "type": "replace",
+      "file": "src/service.py",
+      "old": "if normalized == \"snapshot\":\n        return \"snapshot-cache\"",
+      "new": "if normalized == \"snapshot\":\n        return \"no-cache\" if from_test_suite else \"snapshot-cache\"",
+      "is_correct": true
+    }
+  ],
+  "force_single_edit": true,
+  "prefer_replan_after_disagreement": true
+}

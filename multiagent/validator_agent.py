@@ -13,6 +13,7 @@ class ValidationDecision:
     rejected: bool
     disagreement: bool
     need_broader_retrieval: bool
+    prefer_replan: bool
     feedback: str
 
 
@@ -29,6 +30,7 @@ def validate_plan(
             rejected=False,
             disagreement=False,
             need_broader_retrieval=False,
+            prefer_replan=False,
             feedback="Targeted test passed.",
         )
 
@@ -51,5 +53,6 @@ def validate_plan(
         rejected=True,
         disagreement=disagreement,
         need_broader_retrieval=missing_test_evidence or disagreement,
+        prefer_replan=task.prefer_replan_after_disagreement and disagreement,
         feedback=feedback,
     )

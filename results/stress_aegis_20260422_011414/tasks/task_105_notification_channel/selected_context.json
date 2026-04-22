@@ -1,0 +1,7 @@
+{
+  "kept_paths": [
+    "src/service.py",
+    "tests/test_stress_cases.py",
+    "src/notification_reference.py"
+  ]
+}
