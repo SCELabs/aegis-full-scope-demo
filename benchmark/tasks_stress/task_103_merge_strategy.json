@@ -1,0 +1,48 @@
+{
+  "id": "task_103_merge_strategy",
+  "title": "Use docs fast path on mainline docs-only changes",
+  "description": "Fix choose_merge_strategy so docs-only changes on main still use docs-fast-path instead of safe-rebase.",
+  "target_test": "tests/test_stress_cases.py::test_choose_merge_strategy_prefers_docs_fast_path_for_docs_only_mainline_changes",
+  "expected_target_file": "src/service.py",
+  "failing_test_file": "tests/test_stress_cases.py",
+  "search_queries": [
+    "choose_merge_strategy",
+    "docs-fast-path",
+    "safe-rebase",
+    "README.md"
+  ],
+  "relevant_files": [
+    "src/service.py",
+    "tests/test_stress_cases.py",
+    "src/merge_reference.py"
+  ],
+  "patch_hints": [
+    {
+      "hint_id": "mainline_squash",
+      "type": "replace",
+      "file": "src/service.py",
+      "old": "if base_branch == \"main\":\n        return \"safe-rebase\"\n    if docs_only:\n        return \"docs-fast-path\"",
+      "new": "if base_branch == \"main\":\n        return \"squash\"\n    if docs_only:\n        return \"docs-fast-path\"",
+      "preferred_without_test": true
+    },
+    {
+      "hint_id": "docs_first",
+      "type": "replace",
+      "file": "src/service.py",
+      "old": "if base_branch == \"main\":\n        return \"safe-rebase\"\n    if docs_only:\n        return \"docs-fast-path\"",
+      "new": "if docs_only:\n        return \"docs-fast-path\"\n    if base_branch == \"main\":\n        return \"safe-rebase\"",
+      "requires_test_evidence": true,
+      "is_correct": true
+    }
+  ],
+  "repair_hints": [
+    {
+      "hint_id": "repair_docs_first",
+      "type": "replace",
+      "file": "src/service.py",
+      "old": "if base_branch == \"main\":\n        return \"squash\"\n    if docs_only:\n        return \"docs-fast-path\"",
+      "new": "if docs_only:\n        return \"docs-fast-path\"\n    if base_branch == \"main\":\n        return \"safe-rebase\"",
+      "is_correct": true
+    }
+  ]
+}

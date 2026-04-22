@@ -287,7 +287,7 @@ class WorkflowRunner:
             planner_policy = planner_policy_from_llm(llm_result.to_dict())
             (task_dir / "aegis_result_llm.json").write_text(json.dumps(llm_result.to_dict(), indent=2), encoding="utf-8")
 
-        metrics.retrieval_policy_changed_paths = kept_paths != base_retrieval.kept_paths
+        metrics.retrieval_policy_changed_paths = len(set(kept_paths) ^ set(base_retrieval.kept_paths))
 
         rag_payload_post = self._build_rag_payload(task, retrieval, repo_root)
         retrieval_diag = {
@@ -321,7 +321,7 @@ class WorkflowRunner:
 
         baseline_preview_plan = self.model.complete_patch_plan(task, retrieval.context, policy=PlannerPolicy())
         plan = self.model.complete_patch_plan(task, retrieval.context, policy=planner_policy)
-        metrics.planner_policy_changed_edit_count = len(plan.edits) != len(baseline_preview_plan.edits)
+        metrics.planner_policy_changed_edit_count = abs(len(plan.edits) - len(baseline_preview_plan.edits))
 
         metrics.llm_calls += 1
         (task_dir / "patch.txt").write_text(json.dumps(plan.edits, indent=2), encoding="utf-8")
@@ -401,6 +401,7 @@ class WorkflowRunner:
                 metrics.control_actions_applied += len(step_result.actions)
                 metrics.per_scope_action_counts["step"] += len(step_result.actions)
                 metrics.step_scope_activated = True
+                metrics.step_scope_activation_count += 1
 
                 if step_result.fallback:
                     metrics.per_scope_fallback_counts["step"] += 1

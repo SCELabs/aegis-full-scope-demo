@@ -1,0 +1,48 @@
+{
+  "id": "task_102_deploy_status_repair",
+  "title": "Mark failed deploys as needs-repair",
+  "description": "Fix render_deploy_status so failed checks switch the state to needs-repair and preserve the failing check names.",
+  "target_test": "tests/test_stress_cases.py::test_render_deploy_status_requires_repair_after_failed_checks",
+  "expected_target_file": "src/service.py",
+  "failing_test_file": "tests/test_stress_cases.py",
+  "search_queries": [
+    "render_deploy_status",
+    "failed_checks",
+    "needs-repair",
+    "deploy"
+  ],
+  "relevant_files": [
+    "src/service.py",
+    "tests/test_stress_cases.py",
+    "src/config_reference.py"
+  ],
+  "patch_hints": [
+    {
+      "hint_id": "message_only_repair",
+      "type": "replace",
+      "file": "src/service.py",
+      "old": "if failed_checks:\n        return {\"state\": state, \"message\": f\"{state}: {', '.join(failed_checks)}\"}",
+      "new": "if failed_checks:\n        return {\"state\": state, \"message\": f\"needs repair: {', '.join(failed_checks)}\"}",
+      "preferred_without_test": true
+    },
+    {
+      "hint_id": "needs_repair_state",
+      "type": "replace",
+      "file": "src/service.py",
+      "old": "if failed_checks:\n        return {\"state\": state, \"message\": f\"{state}: {', '.join(failed_checks)}\"}",
+      "new": "if failed_checks:\n        return {\"state\": \"needs-repair\", \"message\": f\"needs repair: {', '.join(failed_checks)}\"}",
+      "requires_test_evidence": true,
+      "is_correct": true
+    }
+  ],
+  "repair_hints": [
+    {
+      "hint_id": "repair_needs_repair_state",
+      "type": "replace",
+      "file": "src/service.py",
+      "old": "if failed_checks:\n        return {\"state\": state, \"message\": f\"needs repair: {', '.join(failed_checks)}\"}",
+      "new": "if failed_checks:\n        return {\"state\": \"needs-repair\", \"message\": f\"needs repair: {', '.join(failed_checks)}\"}",
+      "is_correct": true
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "id": "task_104_review_owner",
+  "title": "Prefer security owner when token scope is present",
+  "description": "Fix pick_review_owner so billing-auth work with token scope routes to security-ops instead of billing-ops.",
+  "target_test": "tests/test_stress_cases.py::test_pick_review_owner_prefers_security_when_token_scope_is_present",
+  "expected_target_file": "src/service.py",
+  "failing_test_file": "tests/test_stress_cases.py",
+  "search_queries": [
+    "pick_review_owner",
+    "billing-auth",
+    "token_scope",
+    "security-ops"
+  ],
+  "relevant_files": [
+    "src/service.py",
+    "tests/test_stress_cases.py",
+    "src/ownership_notes.py"
+  ],
+  "patch_hints": [
+    {
+      "hint_id": "customer_impact_gate",
+      "type": "replace",
+      "file": "src/service.py",
+      "old": "if \"billing\" in normalized:\n        return \"billing-ops\"\n    if \"auth\" in normalized or has_token_scope:\n        return \"security-ops\"",
+      "new": "if \"billing\" in normalized and has_customer_impact:\n        return \"billing-ops\"\n    if \"auth\" in normalized or has_token_scope:\n        return \"security-ops\"",
+      "preferred_without_test": true,
+      "force_first_pass_ambiguity": true
+    },
+    {
+      "hint_id": "security_before_billing",
+      "type": "replace",
+      "file": "src/service.py",
+      "old": "if \"billing\" in normalized:\n        return \"billing-ops\"\n    if \"auth\" in normalized or has_token_scope:\n        return \"security-ops\"",
+      "new": "if \"auth\" in normalized or has_token_scope:\n        return \"security-ops\"\n    if \"billing\" in normalized:\n        return \"billing-ops\"",
+      "requires_test_evidence": true,
+      "is_correct": true
+    }
+  ],
+  "repair_hints": [
+    {
+      "hint_id": "repair_security_before_billing",
+      "type": "replace",
+      "file": "src/service.py",
+      "old": "if \"billing\" in normalized and has_customer_impact:\n        return \"billing-ops\"\n    if \"auth\" in normalized or has_token_scope:\n        return \"security-ops\"",
+      "new": "if \"auth\" in normalized or has_token_scope:\n        return \"security-ops\"\n    if \"billing\" in normalized:\n        return \"billing-ops\"",
+      "is_correct": true
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "pre_aegis": {
+    "query": "Escalate blocked security alerts. Fix route_alert so blocked high-priority security alerts route to incident-war-room instead of priority-ops.. Search focus: route_alert blocked security high incident-war-room | priority-ops incident war room | alert routing blocked customer",
+    "retrieved_context": [],
+    "symptoms": [
+      "narrow_context",
+      "missing_target_file",
+      "missing_failing_test",
+      "no_duplication"
+    ],
+    "severity": "high",
+    "metadata": {
+      "task_id": "task_101_alert_routing",
+      "candidate_count": 0,
+      "kept_count": 0,
+      "kept_paths": [],
+      "duplication_count": 0,
+      "expected_target_file": "src/service.py",
+      "failing_test_file": "tests/test_stress_cases.py",
+      "target_file_in_kept": false,
+      "failing_test_in_kept": false
+    }
+  },
+  "post_aegis": {
+    "query": "Escalate blocked security alerts. Fix route_alert so blocked high-priority security alerts route to incident-war-room instead of priority-ops.. Search focus: route_alert blocked security high incident-war-room | priority-ops incident war room | alert routing blocked customer",
+    "retrieved_context": [],
+    "symptoms": [
+      "narrow_context",
+      "missing_target_file",
+      "missing_failing_test",
+      "no_duplication"
+    ],
+    "severity": "high",
+    "metadata": {
+      "task_id": "task_101_alert_routing",
+      "candidate_count": 0,
+      "kept_count": 0,
+      "kept_paths": [],
+      "duplication_count": 0,
+      "expected_target_file": "src/service.py",
+      "failing_test_file": "tests/test_stress_cases.py",
+      "target_file_in_kept": false,
+      "failing_test_in_kept": false
+    }
+  },
+  "retrieval_policy_applied": {
+    "keep_k": 5,
+    "boost_path_substrings": [],
+    "require_target_file": false,
+    "require_failing_test_file": false,
+    "prefer_src": false,
+    "prefer_tests": false,
+    "dedupe_aggressive": false,
+    "expand_retrieval": false,
+    "narrow_retrieval": false,
+    "policy_reasons": []
+  },
+  "pre_control_candidates": [],
+  "post_control_candidates": [],
+  "kept_paths": [],
+  "dropped_paths": []
+}

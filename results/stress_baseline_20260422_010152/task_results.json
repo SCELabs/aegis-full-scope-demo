@@ -1,0 +1,190 @@
+[
+  {
+    "task_id": "task_101_alert_routing",
+    "success": true,
+    "notes": "targeted_passed_full_failed",
+    "metrics": {
+      "llm_calls": 1,
+      "retries": 0,
+      "replans": 0,
+      "duplicate_file_inspections": 0,
+      "files_read": 3,
+      "files_edited": 1,
+      "post_success_unnecessary_steps": 0,
+      "targeted_test_runs": 1,
+      "full_test_runs": 1,
+      "syntax_failures": 0,
+      "repair_attempts": 0,
+      "control_actions_applied": 0,
+      "per_scope_action_counts": {
+        "rag": 0,
+        "llm": 0,
+        "step": 0
+      },
+      "per_scope_fallback_counts": {
+        "rag": 0,
+        "llm": 0,
+        "step": 0
+      },
+      "per_scope_live_counts": {
+        "rag": 0,
+        "llm": 0,
+        "step": 0
+      },
+      "retrieved_candidate_count": 3,
+      "retrieved_kept_count": 3,
+      "context_duplication_count": 9,
+      "relevant_target_file_retrieved": true,
+      "failing_test_file_retrieved": true,
+      "first_pass_success": true,
+      "step_scope_activated": false,
+      "step_scope_activation_count": 0,
+      "retrieval_policy_changed_paths": 0,
+      "planner_policy_changed_edit_count": 0,
+      "planner_executor_disagreement_count": 0,
+      "validator_rejection_count": 0,
+      "coordinator_decision_count": 0
+    }
+  },
+  {
+    "task_id": "task_102_deploy_status_repair",
+    "success": true,
+    "notes": "repair_succeeded",
+    "metrics": {
+      "llm_calls": 1,
+      "retries": 1,
+      "replans": 0,
+      "duplicate_file_inspections": 0,
+      "files_read": 3,
+      "files_edited": 1,
+      "post_success_unnecessary_steps": 0,
+      "targeted_test_runs": 2,
+      "full_test_runs": 0,
+      "syntax_failures": 0,
+      "repair_attempts": 1,
+      "control_actions_applied": 0,
+      "per_scope_action_counts": {
+        "rag": 0,
+        "llm": 0,
+        "step": 0
+      },
+      "per_scope_fallback_counts": {
+        "rag": 0,
+        "llm": 0,
+        "step": 0
+      },
+      "per_scope_live_counts": {
+        "rag": 0,
+        "llm": 0,
+        "step": 0
+      },
+      "retrieved_candidate_count": 3,
+      "retrieved_kept_count": 3,
+      "context_duplication_count": 10,
+      "relevant_target_file_retrieved": true,
+      "failing_test_file_retrieved": true,
+      "first_pass_success": false,
+      "step_scope_activated": false,
+      "step_scope_activation_count": 0,
+      "retrieval_policy_changed_paths": 0,
+      "planner_policy_changed_edit_count": 1,
+      "planner_executor_disagreement_count": 0,
+      "validator_rejection_count": 1,
+      "coordinator_decision_count": 0
+    }
+  },
+  {
+    "task_id": "task_103_merge_strategy",
+    "success": true,
+    "notes": "repair_succeeded",
+    "metrics": {
+      "llm_calls": 1,
+      "retries": 1,
+      "replans": 0,
+      "duplicate_file_inspections": 0,
+      "files_read": 3,
+      "files_edited": 1,
+      "post_success_unnecessary_steps": 0,
+      "targeted_test_runs": 2,
+      "full_test_runs": 0,
+      "syntax_failures": 0,
+      "repair_attempts": 1,
+      "control_actions_applied": 0,
+      "per_scope_action_counts": {
+        "rag": 0,
+        "llm": 0,
+        "step": 0
+      },
+      "per_scope_fallback_counts": {
+        "rag": 0,
+        "llm": 0,
+        "step": 0
+      },
+      "per_scope_live_counts": {
+        "rag": 0,
+        "llm": 0,
+        "step": 0
+      },
+      "retrieved_candidate_count": 3,
+      "retrieved_kept_count": 3,
+      "context_duplication_count": 9,
+      "relevant_target_file_retrieved": true,
+      "failing_test_file_retrieved": true,
+      "first_pass_success": false,
+      "step_scope_activated": false,
+      "step_scope_activation_count": 0,
+      "retrieval_policy_changed_paths": 0,
+      "planner_policy_changed_edit_count": 1,
+      "planner_executor_disagreement_count": 0,
+      "validator_rejection_count": 1,
+      "coordinator_decision_count": 0
+    }
+  },
+  {
+    "task_id": "task_104_review_owner",
+    "success": true,
+    "notes": "targeted_passed_full_failed",
+    "metrics": {
+      "llm_calls": 1,
+      "retries": 0,
+      "replans": 0,
+      "duplicate_file_inspections": 0,
+      "files_read": 3,
+      "files_edited": 1,
+      "post_success_unnecessary_steps": 0,
+      "targeted_test_runs": 1,
+      "full_test_runs": 1,
+      "syntax_failures": 0,
+      "repair_attempts": 0,
+      "control_actions_applied": 0,
+      "per_scope_action_counts": {
+        "rag": 0,
+        "llm": 0,
+        "step": 0
+      },
+      "per_scope_fallback_counts": {
+        "rag": 0,
+        "llm": 0,
+        "step": 0
+      },
+      "per_scope_live_counts": {
+        "rag": 0,
+        "llm": 0,
+        "step": 0
+      },
+      "retrieved_candidate_count": 3,
+      "retrieved_kept_count": 3,
+      "context_duplication_count": 9,
+      "relevant_target_file_retrieved": true,
+      "failing_test_file_retrieved": true,
+      "first_pass_success": true,
+      "step_scope_activated": false,
+      "step_scope_activation_count": 0,
+      "retrieval_policy_changed_paths": 0,
+      "planner_policy_changed_edit_count": 1,
+      "planner_executor_disagreement_count": 0,
+      "validator_rejection_count": 0,
+      "coordinator_decision_count": 0
+    }
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "path": "src/example.py",
+    "score": 4,
+    "hits": [
+      "collect_enabled_flags",
+      "enabled",
+      "disabled",
+      "raw_flags"
+    ],
+    "policy_score": 17
+  },
+  {
+    "path": "tests/test_example.py",
+    "score": 3,
+    "hits": [
+      "collect_enabled_flags",
+      "enabled",
+      "disabled"
+    ],
+    "policy_score": 14
+  },
+  {
+    "path": "src/noisy_reference.py",
+    "score": 2,
+    "hits": [
+      "collect_enabled_flags",
+      "enabled"
+    ],
+    "policy_score": 2
+  }
+]

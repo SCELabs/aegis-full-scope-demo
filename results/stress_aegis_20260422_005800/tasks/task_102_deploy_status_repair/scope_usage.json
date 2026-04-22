@@ -1,0 +1,14 @@
+{
+  "rag": {
+    "live": 0,
+    "fallback": 1
+  },
+  "llm": {
+    "live": 0,
+    "fallback": 1
+  },
+  "step": {
+    "live": 0,
+    "fallback": 0
+  }
+}

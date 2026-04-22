@@ -1,0 +1,10 @@
+[
+  {
+    "hint_id": "repair_needs_repair_state",
+    "type": "replace",
+    "file": "src/service.py",
+    "old": "if failed_checks:\n        return {\"state\": state, \"message\": f\"needs repair: {', '.join(failed_checks)}\"}",
+    "new": "if failed_checks:\n        return {\"state\": \"needs-repair\", \"message\": f\"needs repair: {', '.join(failed_checks)}\"}",
+    "is_correct": true
+  }
+]

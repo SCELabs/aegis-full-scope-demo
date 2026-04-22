@@ -1,0 +1,19 @@
+[
+  {
+    "hint_id": "needs_repair_state",
+    "type": "replace",
+    "file": "src/service.py",
+    "old": "if failed_checks:\n        return {\"state\": state, \"message\": f\"{state}: {', '.join(failed_checks)}\"}",
+    "new": "if failed_checks:\n        return {\"state\": \"needs-repair\", \"message\": f\"needs repair: {', '.join(failed_checks)}\"}",
+    "requires_test_evidence": true,
+    "is_correct": true
+  },
+  {
+    "hint_id": "message_only_repair",
+    "type": "replace",
+    "file": "src/service.py",
+    "old": "if failed_checks:\n        return {\"state\": state, \"message\": f\"{state}: {', '.join(failed_checks)}\"}",
+    "new": "if failed_checks:\n        return {\"state\": state, \"message\": f\"needs repair: {', '.join(failed_checks)}\"}",
+    "preferred_without_test": true
+  }
+]

@@ -45,8 +45,12 @@ class TaskMetrics:
 
     first_pass_success: bool = False
     step_scope_activated: bool = False
-    retrieval_policy_changed_paths: bool = False
-    planner_policy_changed_edit_count: bool = False
+    step_scope_activation_count: int = 0
+    retrieval_policy_changed_paths: int = 0
+    planner_policy_changed_edit_count: int = 0
+    planner_executor_disagreement_count: int = 0
+    validator_rejection_count: int = 0
+    coordinator_decision_count: int = 0
 
 
 @dataclass

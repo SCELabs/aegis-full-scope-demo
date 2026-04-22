@@ -1,0 +1,20 @@
+[
+  {
+    "path": "src/example.py",
+    "score": 3,
+    "hits": [
+      "normalize_username",
+      "underscores",
+      "spaces"
+    ]
+  },
+  {
+    "path": "tests/test_example.py",
+    "score": 3,
+    "hits": [
+      "normalize_username",
+      "underscores",
+      "spaces"
+    ]
+  }
+]

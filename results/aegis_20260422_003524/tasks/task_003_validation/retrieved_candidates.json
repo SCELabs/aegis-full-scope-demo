@@ -1,0 +1,21 @@
+[
+  {
+    "path": "src/example.py",
+    "score": 2,
+    "hits": [
+      "safe_divide",
+      "zero"
+    ],
+    "policy_score": 15
+  },
+  {
+    "path": "tests/test_example.py",
+    "score": 3,
+    "hits": [
+      "safe_divide",
+      "zero",
+      "ValueError"
+    ],
+    "policy_score": 14
+  }
+]
