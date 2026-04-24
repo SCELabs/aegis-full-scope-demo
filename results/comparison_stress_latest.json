@@ -1,6 +1,6 @@
 {
-  "baseline_run": "results/stress_baseline_20260422_011415",
-  "aegis_run": "results/stress_aegis_20260422_020035",
+  "baseline_run": "results/stress_baseline_20260424_032048",
+  "aegis_run": "results/stress_aegis_20260424_032107",
   "success": {
     "baseline": 5,
     "aegis": 7,
@@ -27,22 +27,30 @@
     "baseline_live": {
       "rag": 0,
       "llm": 0,
-      "step": 0
+      "step": 0,
+      "context": 0,
+      "agent": 0
     },
     "baseline_fallback": {
       "rag": 0,
       "llm": 0,
-      "step": 0
+      "step": 0,
+      "context": 0,
+      "agent": 0
     },
     "aegis_live": {
       "rag": 8,
       "llm": 8,
-      "step": 2
+      "step": 2,
+      "context": 8,
+      "agent": 7
     },
     "aegis_fallback": {
       "rag": 0,
       "llm": 0,
-      "step": 0
+      "step": 0,
+      "context": 0,
+      "agent": 0
     }
   },
   "multiagent_metrics": {
