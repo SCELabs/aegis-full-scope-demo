@@ -1,1 +1,0 @@
-"""Stress benchmark target repo."""

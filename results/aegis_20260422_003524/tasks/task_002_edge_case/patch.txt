@@ -1,8 +1,0 @@
-[
-  {
-    "type": "replace",
-    "file": "src/example.py",
-    "old": "return [part for part in csv_tags.split(\",\")]",
-    "new": "return [part.strip() for part in csv_tags.split(\",\") if part.strip()]"
-  }
-]

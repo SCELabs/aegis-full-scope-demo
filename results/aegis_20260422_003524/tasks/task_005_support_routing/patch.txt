@@ -1,8 +1,0 @@
-[
-  {
-    "type": "replace",
-    "file": "src/example.py",
-    "old": "if normalized == \"high\":\n        return \"priority-queue\"",
-    "new": "if normalized == \"high\":\n        return \"vip-escalation\" if is_enterprise else \"priority-queue\""
-  }
-]

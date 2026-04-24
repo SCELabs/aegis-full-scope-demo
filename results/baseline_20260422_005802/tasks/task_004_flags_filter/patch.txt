@@ -1,8 +1,0 @@
-[
-  {
-    "type": "replace",
-    "file": "src/example.py",
-    "old": "return [part.strip().lower() for part in raw_flags.split(\",\")]",
-    "new": "return [part.strip().lower() for part in raw_flags.split(\",\") if part.strip().lower().startswith(\"enabled:\")]"
-  }
-]

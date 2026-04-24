@@ -1,7 +1,0 @@
-[
-  {
-    "file": "src/noisy_reference.py",
-    "old": "if \"password\" in text or \"login\" in text:",
-    "new": "if \"password\" in text or \"login\" in text or \"outage\" in text:"
-  }
-]

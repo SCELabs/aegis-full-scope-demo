@@ -1,7 +1,0 @@
-{
-  "kept_paths": [
-    "src/cache_reference.py",
-    "src/service.py",
-    "tests/test_stress_cases.py"
-  ]
-}
