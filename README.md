@@ -126,6 +126,63 @@ It returns structured control decisions.
 
 ---
 
+## Using the Aegis SDK
+
+This demo uses the Aegis Python SDK to apply runtime control at key system boundaries.
+
+**Install:**
+
+`pip install scelabs-aegis`
+
+### Basic usage
+
+    from aegis import AegisClient
+
+    client = AegisClient()
+
+    result = client.auto().rag(
+        query="Fix failing test for normalize_username",
+        retrieved_context=[
+            "src/users.py contains normalize_username",
+            "tests/test_users.py asserts spaces become underscores",
+        ],
+        symptoms=["retrieval_noise"],
+        severity="medium",
+    )
+
+    print(result.actions)
+    print(result.trace)
+
+Aegis returns structured control outputs that are applied by your system. It does not execute models, tools, or workflows.
+
+### Using different scopes
+
+Each scope controls a different boundary in your system:
+
+- `llm` → control generation and model-call behavior  
+- `rag` → control retrieved evidence and context  
+- `step` → control a single workflow action or retry boundary  
+- `context` → clean and prioritize information state before the next step  
+- `agent` → control multi-step workflow loops  
+
+### How this demo uses Aegis
+
+This repo applies Aegis at multiple points in the workflow:
+
+- Retrieval → `rag`  
+- Context shaping → `context`  
+- Planning → `llm`  
+- Retry/repair loop → `step`  
+- Task lifecycle → `agent`  
+
+Aegis shapes behavior at each boundary but does not replace the workflow, tools, or model execution.
+
+### Learn more
+
+- SDK repo: https://github.com/SCELabs/aegis-client  
+- Request shapes: https://github.com/SCELabs/aegis-client/blob/main/docs/request-shapes.md  
+- Examples: https://github.com/SCELabs/aegis-client/tree/main/docs/examples  
+
 ## Repo layout
 
 * `agent/` → workflow logic
