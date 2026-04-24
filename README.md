@@ -56,18 +56,18 @@ The stress lane introduces:
 * planner/executor disagreement
 * optional multi-agent coordination
 
-| Metric                        | Baseline | Aegis |  Delta |
-| ----------------------------- | -------: | ----: | -----: |
-| Tasks completed               |    5 / 7 | 7 / 7 | **+2** |
-| First-pass success            |    3 / 7 | 6 / 7 | **+3** |
-| Retries                       |        — |     — | **-1** |
-| Replans                       |        — |     — | **-3** |
-| Repair attempts               |        — |     — | **-1** |
-| Retrieval expansions          |        — |     — | **-3** |
-| Duplicate inspections         |        — |     — | **-6** |
-| Planner/executor disagreement |        — |     — | **-5** |
-| Validator rejections          |        — |     — | **-6** |
-| Step scope activations        |        0 |     2 | **+2** |
+| Metric | Baseline | Aegis | Delta |
+|---|---:|---:|---:|
+| Tasks completed | 5 / 7 | 7 / 7 | **+2** |
+| First-pass success | 3 / 7 | 6 / 7 | **+3** |
+| Retries | 2 | 1 | **-1** |
+| Replans | 4 | 1 | **-3** |
+| Repair attempts | 2 | 1 | **-1** |
+| Retrieval expansions | 4 | 1 | **-3** |
+| Duplicate inspections | 9 | 3 | **-6** |
+| Planner/executor disagreement | 6 | 1 | **-5** |
+| Validator rejections | 8 | 2 | **-6** |
+| Step scope activations | 0 | 2 | **+2** |
 
 Live scope usage:
 
