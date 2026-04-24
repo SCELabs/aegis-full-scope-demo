@@ -1,0 +1,56 @@
+{
+  "scope": "context",
+  "actions": [
+    {
+      "type": "prioritize_protected_context"
+    },
+    {
+      "type": "drop_duplicate_or_low_relevance_context"
+    },
+    {
+      "type": "preserve_failing_test_evidence"
+    }
+  ],
+  "trace": [
+    {
+      "event": "fallback",
+      "reason": "Could not connect to the Aegis API."
+    }
+  ],
+  "metrics": {
+    "input_message_count": 1,
+    "input_tool_result_count": 2
+  },
+  "explanation": "Fallback context control: prioritize high-signal task and failure evidence while reducing noisy context.",
+  "scope_data": {
+    "mode": "fallback",
+    "fallback_reason": "Could not connect to the Aegis API.",
+    "cleaned_messages": [
+      {
+        "role": "user",
+        "content": "Raise on divide by zero: Fix safe_divide to raise ValueError when denominator is zero."
+      }
+    ],
+    "cleaned_tool_results": [
+      {
+        "tool": "retrieval",
+        "content": "tests/test_example.py: \"\"\"Tests for the benchmark target repo.\"\"\" from __future__ import annotations import pytest from src.example import ( choose_support_channel, collect_enabled_flags, normalize_username, parse_tags, safe_divide, sanitize_filename, ) def test_normalize_username_replaces_spaces_with_"
+      },
+      {
+        "tool": "retrieval",
+        "content": "src/example.py: \"\"\"Tiny benchmark target repo with intentionally buggy behavior.\"\"\" from __future__ import annotations def normalize_username(name: str) -> str: \"\"\"Normalize user names for ids. BUG: spaces are removed instead of converted to underscores. \"\"\" return name.strip().lower().replace(\""
+      }
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content": "Raise on divide by zero: Fix safe_divide to raise ValueError when denominator is zero."
+      }
+    ],
+    "carry_forward_context": [
+      "tests/test_example.py: \"\"\"Tests for the benchmark target repo.\"\"\" from __future__ import annotations import pytest from src.example import ( choose_support_channel, collect_enabled_flags, normalize_username, parse_tags, safe_divide, sanitize_filename, ) def test_normalize_username_replaces_spaces_with_",
+      "src/example.py: \"\"\"Tiny benchmark target repo with intentionally buggy behavior.\"\"\" from __future__ import annotations def normalize_username(name: str) -> str: \"\"\"Normalize user names for ids. BUG: spaces are removed instead of converted to underscores. \"\"\" return name.strip().lower().replace(\""
+    ]
+  },
+  "fallback": true
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "path": "src/service.py",
+    "score": 3,
+    "hits": [
+      "route_alert",
+      "security",
+      "priority-ops"
+    ],
+    "policy_score": 13
+  },
+  {
+    "path": "tests/test_stress_cases.py",
+    "score": 3,
+    "hits": [
+      "route_alert",
+      "security",
+      "incident-war-room"
+    ],
+    "policy_score": 11
+  },
+  {
+    "path": "src/config_reference.py",
+    "score": 3,
+    "hits": [
+      "route_alert",
+      "security",
+      "priority-ops"
+    ],
+    "policy_score": 3
+  }
+]

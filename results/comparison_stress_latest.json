@@ -1,6 +1,6 @@
 {
   "baseline_run": "results/stress_baseline_20260422_011415",
-  "aegis_run": "results/stress_aegis_20260422_011414",
+  "aegis_run": "results/stress_aegis_20260422_020035",
   "success": {
     "baseline": 5,
     "aegis": 7,
@@ -14,10 +14,10 @@
     "replans_delta": -3,
     "repair_attempts_delta": -1,
     "retrieval_expansion_delta": -3,
-    "duplicate_file_inspections_delta": -9,
+    "duplicate_file_inspections_delta": -6,
     "step_scope_activation_count_delta": 2,
     "planner_policy_changed_edit_count_delta": 0,
-    "retrieval_policy_changed_paths_delta": 1
+    "retrieval_policy_changed_paths_delta": 0
   },
   "retrieval_coverage": {
     "target_file_retrieved_delta": 0,
@@ -35,14 +35,14 @@
       "step": 0
     },
     "aegis_live": {
-      "rag": 0,
-      "llm": 0,
-      "step": 0
-    },
-    "aegis_fallback": {
       "rag": 8,
       "llm": 8,
       "step": 2
+    },
+    "aegis_fallback": {
+      "rag": 0,
+      "llm": 0,
+      "step": 0
     }
   },
   "multiagent_metrics": {

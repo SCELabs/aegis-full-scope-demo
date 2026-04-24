@@ -1,0 +1,149 @@
+{
+  "scope": "llm",
+  "actions": [
+    {
+      "type": "adjust_flexibility",
+      "intensity": "medium",
+      "label": "Adjust system flexibility",
+      "description": "Loosen overly rigid behavior enough to recover useful adaptability.",
+      "runtime_targets": [
+        "relax hard constraints slightly",
+        "allow controlled exploration",
+        "widen acceptable response space"
+      ],
+      "expected_effect": "Less brittleness while preserving control."
+    }
+  ],
+  "trace": [
+    {
+      "scope": "llm",
+      "observation": {
+        "status": "stable",
+        "summary": "System is stable under the recommended intervention.",
+        "action_count": 1
+      },
+      "decision": {
+        "summary": "System is stable under the recommended intervention.",
+        "policy_path": {
+          "status": "stable"
+        }
+      },
+      "actions": [
+        {
+          "type": "adjust_flexibility",
+          "intensity": "medium",
+          "label": "Adjust system flexibility",
+          "description": "Loosen overly rigid behavior enough to recover useful adaptability.",
+          "runtime_targets": [
+            "relax hard constraints slightly",
+            "allow controlled exploration",
+            "widen acceptable response space"
+          ],
+          "expected_effect": "Less brittleness while preserving control."
+        }
+      ],
+      "fallback": {
+        "used_fallback": false
+      },
+      "changes": {
+        "before_after_metrics": {}
+      },
+      "upstream": {
+        "evaluation": {
+          "status": "safe",
+          "failure_step": null,
+          "failure_reason": null,
+          "warning_step": null,
+          "timeline": [
+            {
+              "step": 0,
+              "regime": "boundary",
+              "behavior": "stable",
+              "risk": "WATCH",
+              "confidence": 0.7
+            }
+          ],
+          "summary": "Plan completed safely with no instability detected."
+        },
+        "plan": [
+          {
+            "expansion": 0.05
+          }
+        ]
+      }
+    }
+  ],
+  "metrics": {
+    "action_count": 1
+  },
+  "explanation": "Selected because it achieved the highest overall score. The plan maintains stability throughout execution.",
+  "scope_data": {
+    "runtime_config": {
+      "temperature": 0.9,
+      "top_p": 1.0,
+      "prompt_suffix": "Allow explicit exceptions only when they are directly supported by the case."
+    },
+    "controlled_prompt": "Plan a minimal code patch based on retrieval context and failing tests. Allow explicit exceptions only when they are directly supported by the case.",
+    "decision": {
+      "status": "stable",
+      "summary": "System is stable under the recommended intervention.",
+      "actions": [
+        {
+          "type": "adjust_flexibility",
+          "intensity": "medium",
+          "label": "Adjust system flexibility",
+          "description": "Loosen overly rigid behavior enough to recover useful adaptability.",
+          "runtime_targets": [
+            "relax hard constraints slightly",
+            "allow controlled exploration",
+            "widen acceptable response space"
+          ],
+          "expected_effect": "Less brittleness while preserving control."
+        }
+      ],
+      "runtime_config": {
+        "temperature": 0.9,
+        "top_p": 1.0,
+        "prompt_suffix": "Allow explicit exceptions only when they are directly supported by the case."
+      },
+      "controlled_prompt": "Plan a minimal code patch based on retrieval context and failing tests. Allow explicit exceptions only when they are directly supported by the case.",
+      "explanation": "Selected because it achieved the highest overall score. The plan maintains stability throughout execution.",
+      "trace": {
+        "evaluation": {
+          "status": "safe",
+          "failure_step": null,
+          "failure_reason": null,
+          "warning_step": null,
+          "timeline": [
+            {
+              "step": 0,
+              "regime": "boundary",
+              "behavior": "stable",
+              "risk": "WATCH",
+              "confidence": 0.7
+            }
+          ],
+          "summary": "Plan completed safely with no instability detected."
+        },
+        "plan": [
+          {
+            "expansion": 0.05
+          }
+        ]
+      }
+    },
+    "input": {
+      "task_id": "task_106_runbook_expansion",
+      "context_paths": [
+        "src/service.py",
+        "tests/test_stress_cases.py",
+        "src/runbook_reference.py",
+        "src/config_reference.py",
+        "src/notification_reference.py"
+      ],
+      "candidate_count": 2,
+      "validator_feedback": ""
+    }
+  },
+  "fallback": false
+}

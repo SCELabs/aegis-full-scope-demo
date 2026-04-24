@@ -51,8 +51,10 @@ These results are from the stress lane using a live Aegis backend (no fallback).
 **Scope usage (live run):**
 
 * RAG: active across all tasks
+* CONTEXT: active at retrieval-to-planning boundary
 * LLM: active across all tasks
-* Step: activated under stress conditions
+* STEP: activated under stress conditions
+* AGENT: active at task boundary
 * Fallback: **0 (fully live execution)**
 
 These results demonstrate that Aegis improves coordination efficiency, reduces wasted work, and increases first-pass task success under realistic pressure.
@@ -80,9 +82,11 @@ This project is intended to be:
 
 ### Aegis control responsibilities
 
-* **RAG scope**: retrieval-policy shaping and context pressure
+* **RAG scope**: retrieval-policy shaping and evidence pressure
+* **CONTEXT scope**: information-state control before planning
 * **LLM scope**: planner runtime shaping and edit-selection pressure
-* **Step scope**: retry-loop and stress-lane coordinator decisions
+* **STEP scope**: retry-loop and stress-lane coordinator decisions
+* **AGENT scope**: workflow-loop control at the task boundary
 
 If credentials or SDK access are unavailable, fallback control is used and explicitly logged in artifacts.
 
@@ -172,8 +176,10 @@ Per-task artifacts include:
 * `notes.txt`
 * `scope_usage.json`
 * `aegis_result_rag.json` when called
+* `aegis_result_context.json` when called
 * `aegis_result_llm.json` when called
 * `aegis_result_step.json` when called
+* `aegis_result_agent.json` when called
 
 When stress multi-agent mode is enabled, each task also writes:
 
@@ -209,10 +215,16 @@ The stress multi-agent loop keeps control and execution explicit:
 Aegis is inserted at:
 
 * the retriever boundary with `rag`
+* the context-state boundary with `context`
 * the planner boundary with `llm`
-* the coordinator boundary with `step`
+* the coordinator/retry boundary with `step`
+* the task boundary with `agent`
 
-This mirrors the source-of-truth positioning: Aegis shapes runtime behavior at boundaries, but does not replace the agents.
+This mirrors the source-of-truth positioning: Aegis shapes runtime behavior at boundaries, but does not replace the local workflow runner, stress coordinator, or tool execution.
+
+Agent scope does not replace local orchestration. It provides bounded loop-control signals at task boundaries.
+
+Context scope does not replace retrieval. It controls information state between retrieval and planning and returns structured control/observability data.
 
 ## Metrics logged
 

@@ -1,0 +1,111 @@
+[
+  {
+    "attempt": 1,
+    "decision": "replan",
+    "feedback": "Validator rejected the chosen edit; test evidence points to a different patch.",
+    "keep_k_before": 5,
+    "keep_k_after": 6,
+    "retrieval_expanded": true,
+    "step_policy": {
+      "decision": "retry",
+      "run_targeted_only": true,
+      "require_full_validation": true,
+      "reread_mode": "touched",
+      "suppress_duplicate_reads": true,
+      "retrieval_keep_k_delta": 1
+    },
+    "step_scope_result": {
+      "scope": "step",
+      "actions": [
+        {
+          "type": "decision",
+          "value": "retry"
+        },
+        {
+          "type": "reread_touched_only"
+        },
+        {
+          "type": "suppress_duplicate_reads"
+        },
+        {
+          "type": "rerun_targeted_only"
+        },
+        {
+          "type": "expand_retrieval_next_attempt"
+        }
+      ],
+      "trace": [
+        {
+          "event": "fallback",
+          "reason": "Aegis API returned status 500"
+        }
+      ],
+      "metrics": {
+        "attempt": 1
+      },
+      "explanation": "Fallback step control based on bounded retries and loop-waste reduction.",
+      "scope_data": {
+        "mode": "fallback",
+        "fallback_reason": "Aegis API returned status 500"
+      },
+      "fallback": true
+    }
+  },
+  {
+    "attempt": 2,
+    "decision": "retry",
+    "feedback": "Patch did not apply cleanly; replan with current file state.",
+    "keep_k_before": 6,
+    "keep_k_after": 6,
+    "retrieval_expanded": false,
+    "step_policy": {
+      "decision": "retry",
+      "run_targeted_only": true,
+      "require_full_validation": false,
+      "reread_mode": "touched",
+      "suppress_duplicate_reads": true,
+      "retrieval_keep_k_delta": 0
+    },
+    "step_scope_result": {
+      "scope": "step",
+      "actions": [
+        {
+          "type": "decision",
+          "value": "retry"
+        },
+        {
+          "type": "reread_touched_only"
+        },
+        {
+          "type": "suppress_duplicate_reads"
+        },
+        {
+          "type": "rerun_targeted_only"
+        },
+        {
+          "type": "skip_full_validation"
+        }
+      ],
+      "trace": [
+        {
+          "event": "fallback",
+          "reason": "Aegis API returned status 500"
+        }
+      ],
+      "metrics": {
+        "attempt": 2
+      },
+      "explanation": "Fallback step control based on bounded retries and loop-waste reduction.",
+      "scope_data": {
+        "mode": "fallback",
+        "fallback_reason": "Aegis API returned status 500"
+      },
+      "fallback": true
+    }
+  },
+  {
+    "attempt": 2,
+    "decision": "stop",
+    "reason": "repair_succeeded"
+  }
+]

@@ -1,0 +1,35 @@
+[
+  {
+    "path": "src/service.py",
+    "score": 4,
+    "hits": [
+      "choose_cache_strategy",
+      "snapshot",
+      "test_suite",
+      "cache"
+    ],
+    "policy_score": 17
+  },
+  {
+    "path": "tests/test_stress_cases.py",
+    "score": 4,
+    "hits": [
+      "choose_cache_strategy",
+      "snapshot",
+      "test_suite",
+      "cache"
+    ],
+    "policy_score": 15
+  },
+  {
+    "path": "src/cache_reference.py",
+    "score": 4,
+    "hits": [
+      "choose_cache_strategy",
+      "snapshot",
+      "test_suite",
+      "cache"
+    ],
+    "policy_score": 4
+  }
+]

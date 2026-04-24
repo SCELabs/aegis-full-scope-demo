@@ -1,0 +1,19 @@
+[
+  {
+    "hint_id": "docs_first",
+    "type": "replace",
+    "file": "src/service.py",
+    "old": "if base_branch == \"main\":\n        return \"safe-rebase\"\n    if docs_only:\n        return \"docs-fast-path\"",
+    "new": "if docs_only:\n        return \"docs-fast-path\"\n    if base_branch == \"main\":\n        return \"safe-rebase\"",
+    "requires_test_evidence": true,
+    "is_correct": true
+  },
+  {
+    "hint_id": "mainline_squash",
+    "type": "replace",
+    "file": "src/service.py",
+    "old": "if base_branch == \"main\":\n        return \"safe-rebase\"\n    if docs_only:\n        return \"docs-fast-path\"",
+    "new": "if base_branch == \"main\":\n        return \"squash\"\n    if docs_only:\n        return \"docs-fast-path\"",
+    "preferred_without_test": true
+  }
+]

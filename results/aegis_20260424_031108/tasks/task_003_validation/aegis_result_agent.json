@@ -1,0 +1,67 @@
+{
+  "scope": "agent",
+  "actions": [
+    {
+      "type": "set_bounded_loop",
+      "value": 5
+    },
+    {
+      "type": "preserve_task_boundary"
+    },
+    {
+      "type": "complete_or_stop_on_max_steps"
+    }
+  ],
+  "trace": [
+    {
+      "event": "fallback",
+      "reason": "[{'type': 'missing', 'loc': ['body', 'steps', 0, 'step_name'], 'msg': 'Field required', 'input': {'name': 'retrieve_context', 'input': {'task_id': 'task_003_validation'}}}, {'type': 'missing', 'loc': ['body', 'steps', 0, 'step_input'], 'msg': 'Field required', 'input': {'name': 'retrieve_context', 'input': {'task_id': 'task_003_validation'}}}, {'type': 'missing', 'loc': ['body', 'steps', 1, 'step_name'], 'msg': 'Field required', 'input': {'name': 'control_context', 'input': {'task_id': 'task_003_validation'}}}, {'type': 'missing', 'loc': ['body', 'steps', 1, 'step_input'], 'msg': 'Field required', 'input': {'name': 'control_context', 'input': {'task_id': 'task_003_validation'}}}, {'type': 'missing', 'loc': ['body', 'steps', 2, 'step_name'], 'msg': 'Field required', 'input': {'name': 'plan_patch', 'input': {'task_id': 'task_003_validation'}}}, {'type': 'missing', 'loc': ['body', 'steps', 2, 'step_input'], 'msg': 'Field required', 'input': {'name': 'plan_patch', 'input': {'task_id': 'task_003_validation'}}}, {'type': 'missing', 'loc': ['body', 'steps', 3, 'step_name'], 'msg': 'Field required', 'input': {'name': 'apply_patch', 'input': {'task_id': 'task_003_validation'}}}, {'type': 'missing', 'loc': ['body', 'steps', 3, 'step_input'], 'msg': 'Field required', 'input': {'name': 'apply_patch', 'input': {'task_id': 'task_003_validation'}}}, {'type': 'missing', 'loc': ['body', 'steps', 4, 'step_name'], 'msg': 'Field required', 'input': {'name': 'validate', 'input': {'target_test': 'tests/test_example.py::test_safe_divide_raises_for_zero_denominator'}}}, {'type': 'missing', 'loc': ['body', 'steps', 4, 'step_input'], 'msg': 'Field required', 'input': {'name': 'validate', 'input': {'target_test': 'tests/test_example.py::test_safe_divide_raises_for_zero_denominator'}}}]"
+    }
+  ],
+  "metrics": {
+    "planned_step_count": 5
+  },
+  "explanation": "Fallback agent control: enforce deterministic bounded workflow progression at task boundary.",
+  "scope_data": {
+    "mode": "fallback",
+    "fallback_reason": "[{'type': 'missing', 'loc': ['body', 'steps', 0, 'step_name'], 'msg': 'Field required', 'input': {'name': 'retrieve_context', 'input': {'task_id': 'task_003_validation'}}}, {'type': 'missing', 'loc': ['body', 'steps', 0, 'step_input'], 'msg': 'Field required', 'input': {'name': 'retrieve_context', 'input': {'task_id': 'task_003_validation'}}}, {'type': 'missing', 'loc': ['body', 'steps', 1, 'step_name'], 'msg': 'Field required', 'input': {'name': 'control_context', 'input': {'task_id': 'task_003_validation'}}}, {'type': 'missing', 'loc': ['body', 'steps', 1, 'step_input'], 'msg': 'Field required', 'input': {'name': 'control_context', 'input': {'task_id': 'task_003_validation'}}}, {'type': 'missing', 'loc': ['body', 'steps', 2, 'step_name'], 'msg': 'Field required', 'input': {'name': 'plan_patch', 'input': {'task_id': 'task_003_validation'}}}, {'type': 'missing', 'loc': ['body', 'steps', 2, 'step_input'], 'msg': 'Field required', 'input': {'name': 'plan_patch', 'input': {'task_id': 'task_003_validation'}}}, {'type': 'missing', 'loc': ['body', 'steps', 3, 'step_name'], 'msg': 'Field required', 'input': {'name': 'apply_patch', 'input': {'task_id': 'task_003_validation'}}}, {'type': 'missing', 'loc': ['body', 'steps', 3, 'step_input'], 'msg': 'Field required', 'input': {'name': 'apply_patch', 'input': {'task_id': 'task_003_validation'}}}, {'type': 'missing', 'loc': ['body', 'steps', 4, 'step_name'], 'msg': 'Field required', 'input': {'name': 'validate', 'input': {'target_test': 'tests/test_example.py::test_safe_divide_raises_for_zero_denominator'}}}, {'type': 'missing', 'loc': ['body', 'steps', 4, 'step_input'], 'msg': 'Field required', 'input': {'name': 'validate', 'input': {'target_test': 'tests/test_example.py::test_safe_divide_raises_for_zero_denominator'}}}]",
+    "agent_runtime": {
+      "steps": [
+        {
+          "name": "retrieve_context",
+          "input": {
+            "task_id": "task_003_validation"
+          }
+        },
+        {
+          "name": "control_context",
+          "input": {
+            "task_id": "task_003_validation"
+          }
+        },
+        {
+          "name": "plan_patch",
+          "input": {
+            "task_id": "task_003_validation"
+          }
+        },
+        {
+          "name": "apply_patch",
+          "input": {
+            "task_id": "task_003_validation"
+          }
+        },
+        {
+          "name": "validate",
+          "input": {
+            "target_test": "tests/test_example.py::test_safe_divide_raises_for_zero_denominator"
+          }
+        }
+      ],
+      "tool_calls": [],
+      "stop_reason": "completed",
+      "carry_forward_context": []
+    }
+  },
+  "fallback": true
+}

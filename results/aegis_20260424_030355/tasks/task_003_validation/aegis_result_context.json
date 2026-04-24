@@ -1,0 +1,133 @@
+{
+  "scope": "context",
+  "actions": [
+    {
+      "type": "compress_history",
+      "item_id": "tool_1",
+      "reason": "content_too_long"
+    },
+    {
+      "type": "compress_history",
+      "item_id": "tool_2",
+      "reason": "content_too_long"
+    }
+  ],
+  "trace": [
+    {
+      "scope": "context",
+      "observation": {
+        "current_step": 1,
+        "input_items": 3,
+        "estimated_tokens_before": 75,
+        "dropped_irrelevant": 0,
+        "dropped_contradictions": 0,
+        "compressed_items": 2,
+        "protected_items": 0,
+        "high_relevance_items": 1
+      },
+      "decision": {
+        "kept_items": 3,
+        "estimated_tokens_after": 64,
+        "carry_forward_items": 1,
+        "strategy": "protect_then_filter_then_compress_then_select_carry_forward"
+      },
+      "actions": [
+        {
+          "type": "compress_history",
+          "item_id": "tool_1",
+          "reason": "content_too_long"
+        },
+        {
+          "type": "compress_history",
+          "item_id": "tool_2",
+          "reason": "content_too_long"
+        }
+      ]
+    }
+  ],
+  "metrics": {
+    "input_message_count": 1,
+    "input_tool_result_count": 2,
+    "output_message_count": 1,
+    "output_tool_result_count": 2,
+    "carry_forward_count": 1
+  },
+  "explanation": "",
+  "scope_data": {
+    "internal_controls": {
+      "context": {
+        "input_items": 3,
+        "kept_items": 3,
+        "dropped_irrelevant": 0,
+        "dropped_contradictions": 0,
+        "compressed_items": 2,
+        "protected_items": 0,
+        "estimated_tokens_before": 75,
+        "estimated_tokens_after": 64,
+        "kept_item_ids": [
+          "msg_1",
+          "tool_1",
+          "tool_2"
+        ],
+        "dropped_item_ids": [],
+        "protected_item_ids": [],
+        "compressed_item_ids": [
+          "tool_1",
+          "tool_2"
+        ],
+        "contradictory_item_ids": [],
+        "high_relevance_item_ids": [
+          "msg_1"
+        ],
+        "carry_forward_ids": [
+          "msg_1"
+        ],
+        "discarded_candidate_ids": [],
+        "critical_context_ids": [
+          "msg_1"
+        ],
+        "dropped_roles": {},
+        "kept_roles": {
+          "message": 1,
+          "summary": 2
+        },
+        "message_count": 1,
+        "tool_count": 0,
+        "summary_count": 2
+      }
+    },
+    "carry_forward_context": [
+      {
+        "id": "msg_1",
+        "role": "user",
+        "content": "Raise on divide by zero: Fix safe_divide to raise ValueError when denominator is zero.",
+        "relevance_score": 1.0,
+        "protected": false,
+        "context_origin": "message",
+        "context_age": 0,
+        "decay_applied": false,
+        "collision_with_active_input": false,
+        "collision_reason": null
+      }
+    ],
+    "structured_carry_forward_context": {
+      "critical": [
+        {
+          "id": "msg_1",
+          "role": "user",
+          "content": "Raise on divide by zero: Fix safe_divide to raise ValueError when denominator is zero.",
+          "relevance_score": 1.0,
+          "protected": false,
+          "context_origin": "message",
+          "context_age": 0,
+          "decay_applied": false,
+          "collision_with_active_input": false,
+          "collision_reason": null
+        }
+      ],
+      "supporting": [],
+      "optional": []
+    }
+  },
+  "fallback": false
+}

@@ -1,0 +1,425 @@
+{
+  "scope": "rag",
+  "actions": [
+    {
+      "type": "adjust_flexibility",
+      "intensity": "medium",
+      "label": "Adjust system flexibility",
+      "description": "Loosen overly rigid behavior enough to recover useful adaptability.",
+      "runtime_targets": [
+        "relax hard constraints slightly",
+        "allow controlled exploration",
+        "widen acceptable response space"
+      ],
+      "expected_effect": "Less brittleness while preserving control."
+    }
+  ],
+  "trace": [
+    {
+      "scope": "rag",
+      "observation": {
+        "scope": "rag",
+        "symptoms": [
+          "narrow_context",
+          "target_file_present",
+          "failing_test_present",
+          "context_duplication"
+        ],
+        "severity": "medium",
+        "goal": "stabilize",
+        "constraints": {
+          "strict_policy": false,
+          "requires_consistency": false,
+          "multi_step_validation": false,
+          "low_latency_required": false
+        },
+        "metadata": {
+          "query": "Use docs fast path on mainline docs-only changes. Fix choose_merge_strategy so docs-only changes on main still use docs-fast-path instead of safe-rebase.. Search focus: choose_merge_strategy | docs-fast-path | safe-rebase | README.md",
+          "retrieved_context_count": 3,
+          "task_id": "task_103_merge_strategy",
+          "candidate_count": 3,
+          "kept_count": 3,
+          "kept_paths": [
+            "src/service.py",
+            "tests/test_stress_cases.py",
+            "src/merge_reference.py"
+          ],
+          "duplication_count": 9,
+          "expected_target_file": "src/service.py",
+          "failing_test_file": "tests/test_stress_cases.py",
+          "target_file_in_kept": true,
+          "failing_test_in_kept": true
+        }
+      },
+      "decision": {
+        "policy": "best_score",
+        "selected": {
+          "candidate_index": 4,
+          "rank": 1,
+          "refined": false,
+          "plan_cost": 0.1,
+          "step_budget_used": 1,
+          "score": 133.5,
+          "plan": [
+            {
+              "expansion": 0.1
+            }
+          ],
+          "evaluation": {
+            "status": "safe",
+            "failure_step": null,
+            "failure_reason": null,
+            "warning_step": null,
+            "timeline": [
+              {
+                "step": 0,
+                "regime": "boundary",
+                "behavior": "stable",
+                "risk": "WATCH",
+                "confidence": 0.81
+              }
+            ],
+            "summary": "Plan completed safely with no instability detected."
+          },
+          "repair": null
+        },
+        "alternatives": [
+          {
+            "candidate_index": 5,
+            "rank": 2,
+            "refined": false,
+            "plan_cost": 0.1,
+            "step_budget_used": 1,
+            "score": 133.5,
+            "plan": [
+              {
+                "collapse": 0.1
+              }
+            ],
+            "evaluation": {
+              "status": "safe",
+              "failure_step": null,
+              "failure_reason": null,
+              "warning_step": null,
+              "timeline": [
+                {
+                  "step": 0,
+                  "regime": "boundary",
+                  "behavior": "stable",
+                  "risk": "WATCH",
+                  "confidence": 0.81
+                }
+              ],
+              "summary": "Plan completed safely with no instability detected."
+            },
+            "repair": null
+          },
+          {
+            "candidate_index": 3,
+            "rank": 3,
+            "refined": true,
+            "plan_cost": 0.15000000000000002,
+            "step_budget_used": 1,
+            "score": 133.25,
+            "plan": [
+              {
+                "collapse": 0.15000000000000002
+              }
+            ],
+            "evaluation": {
+              "status": "safe",
+              "failure_step": null,
+              "failure_reason": null,
+              "warning_step": null,
+              "timeline": [
+                {
+                  "step": 0,
+                  "regime": "boundary",
+                  "behavior": "stable",
+                  "risk": "WATCH",
+                  "confidence": 0.81
+                }
+              ],
+              "summary": "Plan completed safely with no instability detected."
+            },
+            "repair": null
+          },
+          {
+            "candidate_index": 4,
+            "rank": 4,
+            "refined": true,
+            "plan_cost": 0.15000000000000002,
+            "step_budget_used": 1,
+            "score": 133.25,
+            "plan": [
+              {
+                "expansion": 0.15000000000000002
+              }
+            ],
+            "evaluation": {
+              "status": "safe",
+              "failure_step": null,
+              "failure_reason": null,
+              "warning_step": null,
+              "timeline": [
+                {
+                  "step": 0,
+                  "regime": "boundary",
+                  "behavior": "stable",
+                  "risk": "WATCH",
+                  "confidence": 0.81
+                }
+              ],
+              "summary": "Plan completed safely with no instability detected."
+            },
+            "repair": null
+          },
+          {
+            "candidate_index": 3,
+            "rank": 5,
+            "refined": false,
+            "plan_cost": 0.2,
+            "step_budget_used": 1,
+            "score": 133.0,
+            "plan": [
+              {
+                "collapse": 0.2
+              }
+            ],
+            "evaluation": {
+              "status": "safe",
+              "failure_step": null,
+              "failure_reason": null,
+              "warning_step": null,
+              "timeline": [
+                {
+                  "step": 0,
+                  "regime": "boundary",
+                  "behavior": "stable",
+                  "risk": "WATCH",
+                  "confidence": 0.81
+                }
+              ],
+              "summary": "Plan completed safely with no instability detected."
+            },
+            "repair": null
+          }
+        ],
+        "explanation": "Selected because it achieved the highest overall score. The plan maintains stability throughout execution."
+      },
+      "actions": [
+        {
+          "type": "adjust_flexibility",
+          "intensity": "medium",
+          "label": "Adjust system flexibility",
+          "description": "Loosen overly rigid behavior enough to recover useful adaptability.",
+          "runtime_targets": [
+            "relax hard constraints slightly",
+            "allow controlled exploration",
+            "widen acceptable response space"
+          ],
+          "expected_effect": "Less brittleness while preserving control."
+        }
+      ],
+      "fallback": {
+        "used_fallback": false
+      },
+      "changes": {
+        "before_after_metrics": {}
+      },
+      "upstream": {
+        "evaluation": {
+          "status": "safe",
+          "failure_step": null,
+          "failure_reason": null,
+          "warning_step": null,
+          "timeline": [
+            {
+              "step": 0,
+              "regime": "boundary",
+              "behavior": "stable",
+              "risk": "WATCH",
+              "confidence": 0.81
+            }
+          ],
+          "summary": "Plan completed safely with no instability detected."
+        },
+        "plan": [
+          {
+            "expansion": 0.1
+          }
+        ]
+      }
+    }
+  ],
+  "metrics": {
+    "action_count": 1,
+    "retrieved_context_count": 3
+  },
+  "explanation": "Selected because it achieved the highest overall score. The plan maintains stability throughout execution.",
+  "scope_data": {
+    "query": "Use docs fast path on mainline docs-only changes. Fix choose_merge_strategy so docs-only changes on main still use docs-fast-path instead of safe-rebase.. Search focus: choose_merge_strategy | docs-fast-path | safe-rebase | README.md",
+    "retrieved_context": [
+      "src/service.py: \"\"\"Stress benchmark target repo with intentionally ambiguous bugs.\"\"\" from __future__ import annotations def route_alert(priority: str, event_type: str, is_customer_blocked: bool = False) -> str: normalized_priority = pr",
+      "tests/test_stress_cases.py: from __future__ import annotations from src.service import ( choose_merge_strategy, choose_cache_strategy, pick_review_owner, resolve_runbook_slug, render_deploy_status, route_alert, select_notification_channel, ) def te",
+      "src/merge_reference.py: \"\"\"Distractor merge heuristics.\"\"\" from __future__ import annotations def choose_merge_strategy(base_branch: str, changed_files: list[str]) -> str: if base_branch == \"main\": return \"safe-rebase\" if any(path.endswith(\".md"
+    ],
+    "decision": {
+      "policy": "best_score",
+      "selected": {
+        "candidate_index": 4,
+        "rank": 1,
+        "refined": false,
+        "plan_cost": 0.1,
+        "step_budget_used": 1,
+        "score": 133.5,
+        "plan": [
+          {
+            "expansion": 0.1
+          }
+        ],
+        "evaluation": {
+          "status": "safe",
+          "failure_step": null,
+          "failure_reason": null,
+          "warning_step": null,
+          "timeline": [
+            {
+              "step": 0,
+              "regime": "boundary",
+              "behavior": "stable",
+              "risk": "WATCH",
+              "confidence": 0.81
+            }
+          ],
+          "summary": "Plan completed safely with no instability detected."
+        },
+        "repair": null
+      },
+      "alternatives": [
+        {
+          "candidate_index": 5,
+          "rank": 2,
+          "refined": false,
+          "plan_cost": 0.1,
+          "step_budget_used": 1,
+          "score": 133.5,
+          "plan": [
+            {
+              "collapse": 0.1
+            }
+          ],
+          "evaluation": {
+            "status": "safe",
+            "failure_step": null,
+            "failure_reason": null,
+            "warning_step": null,
+            "timeline": [
+              {
+                "step": 0,
+                "regime": "boundary",
+                "behavior": "stable",
+                "risk": "WATCH",
+                "confidence": 0.81
+              }
+            ],
+            "summary": "Plan completed safely with no instability detected."
+          },
+          "repair": null
+        },
+        {
+          "candidate_index": 3,
+          "rank": 3,
+          "refined": true,
+          "plan_cost": 0.15000000000000002,
+          "step_budget_used": 1,
+          "score": 133.25,
+          "plan": [
+            {
+              "collapse": 0.15000000000000002
+            }
+          ],
+          "evaluation": {
+            "status": "safe",
+            "failure_step": null,
+            "failure_reason": null,
+            "warning_step": null,
+            "timeline": [
+              {
+                "step": 0,
+                "regime": "boundary",
+                "behavior": "stable",
+                "risk": "WATCH",
+                "confidence": 0.81
+              }
+            ],
+            "summary": "Plan completed safely with no instability detected."
+          },
+          "repair": null
+        },
+        {
+          "candidate_index": 4,
+          "rank": 4,
+          "refined": true,
+          "plan_cost": 0.15000000000000002,
+          "step_budget_used": 1,
+          "score": 133.25,
+          "plan": [
+            {
+              "expansion": 0.15000000000000002
+            }
+          ],
+          "evaluation": {
+            "status": "safe",
+            "failure_step": null,
+            "failure_reason": null,
+            "warning_step": null,
+            "timeline": [
+              {
+                "step": 0,
+                "regime": "boundary",
+                "behavior": "stable",
+                "risk": "WATCH",
+                "confidence": 0.81
+              }
+            ],
+            "summary": "Plan completed safely with no instability detected."
+          },
+          "repair": null
+        },
+        {
+          "candidate_index": 3,
+          "rank": 5,
+          "refined": false,
+          "plan_cost": 0.2,
+          "step_budget_used": 1,
+          "score": 133.0,
+          "plan": [
+            {
+              "collapse": 0.2
+            }
+          ],
+          "evaluation": {
+            "status": "safe",
+            "failure_step": null,
+            "failure_reason": null,
+            "warning_step": null,
+            "timeline": [
+              {
+                "step": 0,
+                "regime": "boundary",
+                "behavior": "stable",
+                "risk": "WATCH",
+                "confidence": 0.81
+              }
+            ],
+            "summary": "Plan completed safely with no instability detected."
+          },
+          "repair": null
+        }
+      ],
+      "explanation": "Selected because it achieved the highest overall score. The plan maintains stability throughout execution."
+    }
+  },
+  "fallback": false
+}

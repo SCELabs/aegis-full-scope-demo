@@ -1,0 +1,46 @@
+{
+  "scope": "rag",
+  "actions": [
+    {
+      "type": "set_keep_k",
+      "value": 5
+    },
+    {
+      "type": "require_target_file"
+    },
+    {
+      "type": "boost_paths",
+      "value": [
+        "src/example.py"
+      ]
+    },
+    {
+      "type": "require_failing_test_file"
+    },
+    {
+      "type": "boost_paths",
+      "value": [
+        "tests/test_example.py"
+      ]
+    },
+    {
+      "type": "dedupe_aggressive"
+    }
+  ],
+  "trace": [
+    {
+      "event": "fallback",
+      "reason": "Aegis API returned status 500"
+    }
+  ],
+  "metrics": {
+    "candidate_count": 3,
+    "duplication_count": 9
+  },
+  "explanation": "Fallback rag control: require target/test coverage, boost likely paths, and narrow noisy retrieval.",
+  "scope_data": {
+    "mode": "fallback",
+    "fallback_reason": "Aegis API returned status 500"
+  },
+  "fallback": true
+}

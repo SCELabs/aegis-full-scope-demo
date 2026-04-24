@@ -1,0 +1,21 @@
+[
+  {
+    "path": "src/example.py",
+    "score": 2,
+    "hits": [
+      "parse_tags",
+      "empty"
+    ],
+    "policy_score": 12
+  },
+  {
+    "path": "tests/test_example.py",
+    "score": 3,
+    "hits": [
+      "parse_tags",
+      "empty",
+      "trim"
+    ],
+    "policy_score": 11
+  }
+]

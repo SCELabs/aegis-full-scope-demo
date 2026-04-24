@@ -1,0 +1,11 @@
+[
+  {
+    "hint_id": "payments_prod_incident",
+    "type": "replace",
+    "file": "src/service.py",
+    "old": "if normalized_team == \"payments\" and environment == \"prod\":\n        return \"payments-prod\"",
+    "new": "if normalized_team == \"payments\" and environment == \"prod\":\n        return \"payments-prod-incident\" if is_customer_impacting else \"payments-prod\"",
+    "requires_test_evidence": true,
+    "is_correct": true
+  }
+]

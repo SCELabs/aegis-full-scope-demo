@@ -15,13 +15,15 @@ from aegis_integration.control_mapper import (
     rag_policy_from_actions,
     step_policy_from_actions,
 )
+from aegis_integration.agent_control import control_agent
+from aegis_integration.context_control import control_context
 from aegis_integration.llm_control import control_llm
 from aegis_integration.rag_control import control_rag
 from aegis_integration.step_control import control_step
 from agent.executor import execute_edits
 from agent.planner import ModelAdapter
 from agent.repair import build_repair_edits
-from agent.state import TaskMetrics, TaskResult, TaskSpec
+from agent.state import TaskMetrics, TaskResult, TaskSpec, scope_usage_from_counts
 from retrieval.context_builder import build_context
 from retrieval.retriever import RetrievalOutput, run_retrieval
 from tools.file_read import read_file
@@ -98,6 +100,37 @@ class WorkflowRunner:
             ],
             "severity": "high" if task.expected_target_file not in kept_set else "medium",
             "metadata": metadata,
+        }
+
+    def _build_context_payload(self, task: TaskSpec, retrieval: RetrievalOutput, repo_root: Path) -> dict[str, Any]:
+        messages = [
+            {
+                "role": "user",
+                "content": f"{task.title}: {task.description}",
+            }
+        ]
+        tool_results = [
+            {"tool": "retrieval", "content": snippet}
+            for snippet in self._compact_context_snippets(repo_root, retrieval.kept_paths, max_chars=280)
+        ]
+        constraints = [
+            "prioritize target file",
+            "preserve failing test evidence",
+            "remove duplicate/noisy context",
+        ]
+        return {
+            "objective": f"Prepare high-signal context for planning task {task.id}.",
+            "messages": messages,
+            "tool_results": tool_results,
+            "constraints": constraints,
+            "symptoms": ["context_noise"],
+            "severity": "medium",
+            "metadata": {
+                "task_id": task.id,
+                "expected_target_file": task.expected_target_file,
+                "failing_test_file": task.failing_test_file,
+                "protected_context": [task.expected_target_file, task.failing_test_file],
+            },
         }
 
     def _apply_retrieval_policy(
@@ -219,6 +252,37 @@ class WorkflowRunner:
         step_policy = StepPolicy(decision="retry")
         rag_policy = RetrievalPolicy(keep_k=6)
         step_policy_log: list[dict[str, Any]] = []
+        context_scope_result: dict[str, Any] | None = None
+
+        if self.use_aegis:
+            agent_result = control_agent(
+                {
+                    "goal": f"Complete coding task {task.id} with minimal patching and bounded retries.",
+                    "steps": [
+                        {"step_name": "retrieve_context", "step_input": {"task_id": task.id}},
+                        {"step_name": "control_context", "step_input": {"task_id": task.id}},
+                        {"step_name": "plan_patch", "step_input": {"task_id": task.id}},
+                        {"step_name": "apply_patch", "step_input": {"task_id": task.id}},
+                        {"step_name": "validate", "step_input": {"target_test": task.target_test}},
+                    ],
+                    "tools": ["file_search", "file_read", "patch_apply", "test_runner"],
+                    "session_id": f"stable:{task.id}",
+                    "max_steps": 5,
+                    "metadata": {
+                        "task_id": task.id,
+                        "target_test": task.target_test,
+                        "expected_target_file": task.expected_target_file,
+                        "failing_test_file": task.failing_test_file,
+                    },
+                }
+            )
+            metrics.control_actions_applied += len(agent_result.actions)
+            metrics.per_scope_action_counts["agent"] += len(agent_result.actions)
+            if agent_result.fallback:
+                metrics.per_scope_fallback_counts["agent"] += 1
+            else:
+                metrics.per_scope_live_counts["agent"] += 1
+            (task_dir / "aegis_result_agent.json").write_text(json.dumps(agent_result.to_dict(), indent=2), encoding="utf-8")
 
         base_retrieval = run_retrieval(repo_root, task.search_queries, keep_k=6)
 
@@ -265,6 +329,19 @@ class WorkflowRunner:
             )
             (task_dir / "aegis_result_rag.json").write_text(json.dumps(rag_result.to_dict(), indent=2), encoding="utf-8")
 
+            context_result = control_context(self._build_context_payload(task, retrieval, repo_root))
+            context_scope_result = context_result.to_dict()
+            metrics.control_actions_applied += len(context_result.actions)
+            metrics.per_scope_action_counts["context"] += len(context_result.actions)
+            if context_result.fallback:
+                metrics.per_scope_fallback_counts["context"] += 1
+            else:
+                metrics.per_scope_live_counts["context"] += 1
+            (task_dir / "aegis_result_context.json").write_text(
+                json.dumps(context_scope_result, indent=2),
+                encoding="utf-8",
+            )
+
             llm_payload = {
                 "base_prompt": "Plan a minimal code patch based on retrieval context and failing tests.",
                 "symptoms": ["overspecified_planning"],
@@ -307,6 +384,18 @@ class WorkflowRunner:
                 {
                     "kept_paths": retrieval.kept_paths,
                     "retrieved_context": rag_payload_post["retrieved_context"],
+                    "context_control": {
+                        "carry_forward_context": (
+                            context_scope_result.get("scope_data", {}).get("carry_forward_context", [])
+                            if context_scope_result
+                            else []
+                        ),
+                        "cleaned_messages": (
+                            context_scope_result.get("scope_data", {}).get("cleaned_messages", [])
+                            if context_scope_result
+                            else []
+                        ),
+                    },
                 },
                 indent=2,
             ),
@@ -449,11 +538,10 @@ class WorkflowRunner:
 
         (task_dir / "step_policy_log.json").write_text(json.dumps(step_policy_log, indent=2), encoding="utf-8")
 
-        task_scope_usage = {
-            "rag": "fallback" if metrics.per_scope_fallback_counts["rag"] > 0 else "live" if metrics.per_scope_live_counts["rag"] > 0 else "not_called",
-            "llm": "fallback" if metrics.per_scope_fallback_counts["llm"] > 0 else "live" if metrics.per_scope_live_counts["llm"] > 0 else "not_called",
-            "step": "fallback" if metrics.per_scope_fallback_counts["step"] > 0 else "live" if metrics.per_scope_live_counts["step"] > 0 else "not_called",
-        }
+        task_scope_usage = scope_usage_from_counts(
+            live_counts=metrics.per_scope_live_counts,
+            fallback_counts=metrics.per_scope_fallback_counts,
+        )
         (task_dir / "scope_usage.json").write_text(json.dumps(task_scope_usage, indent=2), encoding="utf-8")
         (task_dir / "notes.txt").write_text("\n".join(notes) if notes else "no-notes", encoding="utf-8")
 

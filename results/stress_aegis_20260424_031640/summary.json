@@ -1,0 +1,22 @@
+{
+  "mode": "stress_aegis",
+  "lane": "stress",
+  "tasks_total": 7,
+  "tasks_success": 7,
+  "scope_live_counts": {
+    "rag": 8,
+    "llm": 8,
+    "step": 2,
+    "context": 8,
+    "agent": 7
+  },
+  "scope_fallback_counts": {
+    "rag": 0,
+    "llm": 0,
+    "step": 0,
+    "context": 0,
+    "agent": 0
+  },
+  "used_live_aegis": true,
+  "multiagent_enabled": true
+}

@@ -1,34 +1,8 @@
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
 from typing import Any
 
-
-@dataclass
-class ScopeResult:
-    scope: str
-    actions: list[dict]
-    trace: list[dict]
-    metrics: dict
-    explanation: str
-    scope_data: dict
-    fallback: bool
-
-    def to_dict(self) -> dict:
-        return asdict(self)
-
-
-def _normalize_aegis_result(raw: Any, scope: str) -> ScopeResult:
-    payload = raw.to_dict() if hasattr(raw, "to_dict") else (raw if isinstance(raw, dict) else {})
-    return ScopeResult(
-        scope=payload.get("scope", scope),
-        actions=payload.get("actions", []),
-        trace=payload.get("trace", []),
-        metrics=payload.get("metrics", {}),
-        explanation=payload.get("explanation", ""),
-        scope_data=payload.get("scope_data", {}),
-        fallback=bool(payload.get("used_fallback", False)),
-    )
+from aegis_integration.result import ScopeResult, normalize_aegis_result
 
 
 def control_rag(payload: dict) -> ScopeResult:
@@ -43,7 +17,7 @@ def control_rag(payload: dict) -> ScopeResult:
             severity=payload.get("severity", "medium"),
             metadata=payload.get("metadata", {}),
         )
-        return _normalize_aegis_result(result, scope="rag")
+        return normalize_aegis_result(result, scope="rag")
     except Exception as exc:
         metadata = payload.get("metadata", {}) or {}
         candidate_count = int(metadata.get("candidate_count", 0))

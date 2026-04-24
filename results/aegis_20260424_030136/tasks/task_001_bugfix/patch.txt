@@ -1,0 +1,8 @@
+[
+  {
+    "type": "replace",
+    "file": "src/example.py",
+    "old": "return name.strip().lower().replace(\" \", \"\")",
+    "new": "return \"_\".join(name.strip().lower().split())"
+  }
+]

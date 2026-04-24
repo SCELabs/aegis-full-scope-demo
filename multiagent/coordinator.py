@@ -5,6 +5,8 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
+from aegis_integration.agent_control import control_agent
+from aegis_integration.context_control import control_context
 from aegis_integration.control_mapper import StepPolicy, step_policy_from_actions
 from aegis_integration.step_control import control_step
 from agent.repair import build_repair_edits
@@ -52,6 +54,36 @@ class StressCoordinator:
         step_policy = StepPolicy(decision="retry")
         step_scope_result: dict[str, Any] | None = None
 
+        if self.use_aegis:
+            agent_result = control_agent(
+                {
+                    "goal": f"Complete coding task {task.id} with minimal patching and bounded retries.",
+                    "steps": [
+                        {"step_name": "retrieve_context", "step_input": {"task_id": task.id, "attempt": 0}},
+                        {"step_name": "control_context", "step_input": {"task_id": task.id, "attempt": 0}},
+                        {"step_name": "plan_patch", "step_input": {"task_id": task.id, "attempt": 0}},
+                        {"step_name": "apply_patch", "step_input": {"task_id": task.id, "attempt": 0}},
+                        {"step_name": "validate", "step_input": {"target_test": task.target_test}},
+                    ],
+                    "tools": ["retriever_agent", "planner_agent", "executor_agent", "validator_agent"],
+                    "session_id": f"stress:{task.id}",
+                    "max_steps": 5,
+                    "metadata": {
+                        "task_id": task.id,
+                        "target_test": task.target_test,
+                        "expected_target_file": task.expected_target_file,
+                        "failing_test_file": task.failing_test_file,
+                    },
+                }
+            )
+            metrics.control_actions_applied += len(agent_result.actions)
+            metrics.per_scope_action_counts["agent"] += len(agent_result.actions)
+            if agent_result.fallback:
+                metrics.per_scope_fallback_counts["agent"] += 1
+            else:
+                metrics.per_scope_live_counts["agent"] += 1
+            (task_dir / "aegis_result_agent.json").write_text(json.dumps(agent_result.to_dict(), indent=2), encoding="utf-8")
+
         for attempt in range(1, 4):
             retriever = retrieve_with_policy(
                 task=task,
@@ -64,6 +96,39 @@ class StressCoordinator:
             retrieval_diag = retriever.diagnostics
             if retriever.scope_result is not None:
                 (task_dir / "aegis_result_rag.json").write_text(json.dumps(retriever.scope_result, indent=2), encoding="utf-8")
+
+            if self.use_aegis:
+                context_payload = {
+                    "objective": f"Prepare high-signal stress-lane context for task {task.id}.",
+                    "messages": [{"role": "user", "content": f"{task.title}: {task.description}"}],
+                    "tool_results": [
+                        {"tool": "retrieval", "path": path}
+                        for path in retriever.retrieval.kept_paths
+                    ],
+                    "constraints": [
+                        "prioritize target file",
+                        "preserve failing test evidence",
+                        "remove duplicate/noisy context",
+                    ],
+                    "symptoms": ["context_noise", "stress_lane"],
+                    "severity": "medium",
+                    "metadata": {
+                        "task_id": task.id,
+                        "expected_target_file": task.expected_target_file,
+                        "failing_test_file": task.failing_test_file,
+                    },
+                }
+                context_result = control_context(context_payload)
+                metrics.control_actions_applied += len(context_result.actions)
+                metrics.per_scope_action_counts["context"] += len(context_result.actions)
+                if context_result.fallback:
+                    metrics.per_scope_fallback_counts["context"] += 1
+                else:
+                    metrics.per_scope_live_counts["context"] += 1
+                (task_dir / "aegis_result_context.json").write_text(
+                    json.dumps(context_result.to_dict(), indent=2),
+                    encoding="utf-8",
+                )
 
             planner = choose_plan(
                 task=task,
@@ -252,6 +317,14 @@ class StressCoordinator:
             "step": {
                 "live": metrics.per_scope_live_counts["step"],
                 "fallback": metrics.per_scope_fallback_counts["step"],
+            },
+            "context": {
+                "live": metrics.per_scope_live_counts["context"],
+                "fallback": metrics.per_scope_fallback_counts["context"],
+            },
+            "agent": {
+                "live": metrics.per_scope_live_counts["agent"],
+                "fallback": metrics.per_scope_fallback_counts["agent"],
             },
         }
         return CoordinationResult(

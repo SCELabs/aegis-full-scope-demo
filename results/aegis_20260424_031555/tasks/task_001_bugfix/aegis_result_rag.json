@@ -1,0 +1,923 @@
+{
+  "scope": "rag",
+  "actions": [
+    {
+      "type": "retrieval_expansion",
+      "enabled": false,
+      "top_k": 1
+    },
+    {
+      "type": "staged_retrieval",
+      "enabled": false,
+      "reason": null
+    },
+    {
+      "type": "retrieval_plan",
+      "enabled": false,
+      "steps": []
+    },
+    {
+      "type": "support_floor",
+      "value": 1
+    },
+    {
+      "type": "target_keep",
+      "value": 1
+    },
+    {
+      "type": "drop_irrelevant_context",
+      "item_id": "retrieved_context[0]",
+      "reason": "low_relevance_score"
+    }
+  ],
+  "trace": [
+    {
+      "scope": "rag",
+      "observation": {
+        "query_id": "auto_rag",
+        "category": "multi_chunk_synthesis",
+        "retrieved_count": 1,
+        "required_count": 0,
+        "missing_required_chunk_ids": [],
+        "retrieval_has_full_required_support": true
+      },
+      "decision": {
+        "summary": "retrieval_sufficient",
+        "policy_path": {
+          "retrieval_expansion_needed": false,
+          "expansion_score": 0.5,
+          "expansion_threshold": 2.75,
+          "staged_retrieval_recommended": false,
+          "intent_recommended": false,
+          "plan_recommended": false,
+          "support_floor": 1,
+          "target_keep": 1,
+          "contradiction_budget": 0
+        },
+        "policy": "best_score"
+      },
+      "actions": [
+        {
+          "type": "retrieval_expansion",
+          "enabled": false,
+          "top_k": 1
+        },
+        {
+          "type": "staged_retrieval",
+          "enabled": false,
+          "reason": null
+        },
+        {
+          "type": "retrieval_plan",
+          "enabled": false,
+          "steps": []
+        },
+        {
+          "type": "support_floor",
+          "value": 1
+        },
+        {
+          "type": "target_keep",
+          "value": 1
+        }
+      ],
+      "fallback": {
+        "used_fallback": false
+      },
+      "changes": {
+        "before_after_metrics": {
+          "initial": {
+            "noise_rate": 1.0,
+            "contradiction_rate": 0.0,
+            "redundancy_rate": 0.0,
+            "support_ratio": 0.0,
+            "required_support_recall": 1.0,
+            "pruning_rate": 0.0
+          },
+          "post_retrieval": {
+            "noise_rate": 1.0,
+            "contradiction_rate": 0.0,
+            "redundancy_rate": 0.0,
+            "support_ratio": 0.0,
+            "required_support_recall": 1.0,
+            "pruning_rate": 0.0
+          },
+          "final": {
+            "retrieved_count": 0,
+            "final_count": 0,
+            "prompt_tokens": 0,
+            "pruning_rate": 0.0,
+            "noise_rate": 1.0,
+            "contradiction_rate": 0.0,
+            "redundancy_rate": 0.0,
+            "topic_entropy": 0.0,
+            "topic_alignment": 0.0,
+            "required_support_recall": 1.0,
+            "support_chunk_count": 0,
+            "support_recall": 1.0,
+            "support_ratio": 0.0,
+            "required_chunk_hits": 0,
+            "acceptable_chunk_hits": 0,
+            "contradictory_chunk_hits": 0,
+            "off_topic_count": 0,
+            "over_pruned": false,
+            "notes": null
+          }
+        },
+        "final_chunk_ids": [
+          "retrieved_context[0]"
+        ],
+        "removed_chunk_ids": [],
+        "protected_chunk_ids": [
+          "retrieved_context[0]"
+        ],
+        "forced_protected_ids": [],
+        "relevant_file_protection_active": true
+      },
+      "upstream": {
+        "initial_observation": {
+          "query_id": "auto_rag",
+          "category": "multi_chunk_synthesis",
+          "retrieved_count": 1,
+          "required_count": 0,
+          "missing_required_chunk_ids": [],
+          "missing_failing_test_chunk_ids": [],
+          "retrieval_has_full_required_support": true,
+          "failing_test_present": false,
+          "test_dependency_risk": false,
+          "source_count": 0,
+          "test_count": 1,
+          "support_count": 0,
+          "distractor_count": 0,
+          "source_present": false,
+          "test_present": true,
+          "support_present": false,
+          "missing_source_support": false,
+          "missing_test_support": false,
+          "missing_helper_support": false,
+          "role_balance_risk": false,
+          "control_metrics": {
+            "noise_rate": 1.0,
+            "contradiction_rate": 0.0,
+            "redundancy_rate": 0.0,
+            "support_ratio": 0.0,
+            "required_support_recall": 1.0,
+            "pruning_rate": 0.0
+          },
+          "structural_signals": {
+            "coherence": 0.0,
+            "entropy": 0.0,
+            "support": 0.0,
+            "conflict": 0.0,
+            "noise": 1.0
+          },
+          "distractor_outranks_target": false,
+          "high_distractor_concentration": true,
+          "low_support_signal": false,
+          "over_pruning_risk": true
+        },
+        "final_observation": {
+          "query_id": "auto_rag",
+          "category": "multi_chunk_synthesis",
+          "retrieved_count": 1,
+          "required_count": 0,
+          "missing_required_chunk_ids": [],
+          "missing_failing_test_chunk_ids": [],
+          "retrieval_has_full_required_support": true,
+          "failing_test_present": false,
+          "test_dependency_risk": false,
+          "source_count": 0,
+          "test_count": 1,
+          "support_count": 0,
+          "distractor_count": 0,
+          "source_present": false,
+          "test_present": true,
+          "support_present": false,
+          "missing_source_support": false,
+          "missing_test_support": false,
+          "missing_helper_support": false,
+          "role_balance_risk": false,
+          "control_metrics": {
+            "noise_rate": 1.0,
+            "contradiction_rate": 0.0,
+            "redundancy_rate": 0.0,
+            "support_ratio": 0.0,
+            "required_support_recall": 1.0,
+            "pruning_rate": 0.0
+          },
+          "structural_signals": {
+            "coherence": 0.0,
+            "entropy": 0.0,
+            "support": 0.0,
+            "conflict": 0.0,
+            "noise": 1.0
+          },
+          "distractor_outranks_target": false,
+          "high_distractor_concentration": true,
+          "low_support_signal": false,
+          "over_pruning_risk": true
+        },
+        "initial_decision": {
+          "retrieval_expansion_needed": false,
+          "staged_retrieval_recommended": false,
+          "intent_recommended": false,
+          "plan_recommended": false,
+          "initial_top_k": 1,
+          "expanded_top_k": 1,
+          "support_floor": 1,
+          "target_keep": 1,
+          "contradiction_budget": 0,
+          "rationale": "retrieval_sufficient",
+          "diagnostic_role_targets": [
+            "test"
+          ],
+          "typed_evidence_targets": {
+            "source": 0,
+            "test": 1,
+            "support": 0
+          },
+          "expansion_score": 0.5,
+          "expansion_threshold": 2.75,
+          "expansion_reasons": [
+            "high_distractor_concentration"
+          ],
+          "staged_retrieval_reasons": [],
+          "intent_reasons": [],
+          "plan_reasons": [],
+          "control_profile": {
+            "regime": "boundary",
+            "status": "safe",
+            "target_keep": 1,
+            "min_chunks": 2,
+            "contradiction_budget": 0
+          }
+        },
+        "final_decision": {
+          "retrieval_expansion_needed": false,
+          "staged_retrieval_recommended": false,
+          "intent_recommended": false,
+          "plan_recommended": false,
+          "initial_top_k": 1,
+          "expanded_top_k": 1,
+          "support_floor": 1,
+          "target_keep": 1,
+          "contradiction_budget": 0,
+          "rationale": "retrieval_sufficient",
+          "diagnostic_role_targets": [
+            "test"
+          ],
+          "typed_evidence_targets": {
+            "source": 0,
+            "test": 1,
+            "support": 0
+          },
+          "expansion_score": 0.5,
+          "expansion_threshold": 2.75,
+          "expansion_reasons": [
+            "high_distractor_concentration"
+          ],
+          "staged_retrieval_reasons": [],
+          "intent_reasons": [],
+          "plan_reasons": [],
+          "control_profile": {
+            "regime": "boundary",
+            "status": "safe",
+            "target_keep": 1,
+            "min_chunks": 2,
+            "contradiction_budget": 0
+          }
+        },
+        "passive_initial_top_k": 1,
+        "staged_retrieval": {
+          "used": false,
+          "reason": null,
+          "profile": {},
+          "staged_retrieval_recommended": false,
+          "staged_retrieval_reasons": [],
+          "intent_recommended": false,
+          "intent_reasons": [],
+          "retrieval_intent": {
+            "target_roles_needed": [],
+            "entity_focus_terms": [],
+            "role_specific_hints": {},
+            "narrowing_hints": [],
+            "retrieve_test_related_to": null,
+            "retrieve_support_for": null,
+            "retrieve_source_for": null,
+            "avoid_distractor_topic": null
+          },
+          "retrieval_plan_used": false,
+          "plan_recommended": false,
+          "plan_reasons": [],
+          "retrieval_plan": {
+            "steps": []
+          },
+          "retrieval_plan_trace": [],
+          "stage1_chunk_ids": [
+            "retrieved_context[0]"
+          ],
+          "stage2_chunk_ids": [],
+          "merged_chunk_ids": [
+            "retrieved_context[0]"
+          ]
+        },
+        "post_retrieval_metrics": {
+          "noise_rate": 1.0,
+          "contradiction_rate": 0.0,
+          "redundancy_rate": 0.0,
+          "support_ratio": 0.0,
+          "required_support_recall": 1.0,
+          "pruning_rate": 0.0
+        },
+        "final_optimization_metrics": {
+          "retrieved_count": 0,
+          "final_count": 0,
+          "prompt_tokens": 0,
+          "pruning_rate": 0.0,
+          "noise_rate": 1.0,
+          "contradiction_rate": 0.0,
+          "redundancy_rate": 0.0,
+          "topic_entropy": 0.0,
+          "topic_alignment": 0.0,
+          "required_support_recall": 1.0,
+          "support_chunk_count": 0,
+          "support_recall": 1.0,
+          "support_ratio": 0.0,
+          "required_chunk_hits": 0,
+          "acceptable_chunk_hits": 0,
+          "contradictory_chunk_hits": 0,
+          "off_topic_count": 0,
+          "over_pruned": false,
+          "notes": null
+        },
+        "observability": {
+          "initial_control_metrics": {
+            "noise_rate": 1.0,
+            "contradiction_rate": 0.0,
+            "redundancy_rate": 0.0,
+            "support_ratio": 0.0,
+            "required_support_recall": 1.0,
+            "pruning_rate": 0.0
+          },
+          "initial_structural_signals": {
+            "coherence": 0.0,
+            "entropy": 0.0,
+            "support": 0.0,
+            "conflict": 0.0,
+            "noise": 1.0
+          },
+          "control_decision": {
+            "retrieval_expansion_needed": false,
+            "staged_retrieval_recommended": false,
+            "intent_recommended": false,
+            "plan_recommended": false,
+            "initial_top_k": 1,
+            "expanded_top_k": 1,
+            "support_floor": 1,
+            "target_keep": 1,
+            "contradiction_budget": 0,
+            "rationale": "retrieval_sufficient",
+            "diagnostic_role_targets": [
+              "test"
+            ],
+            "typed_evidence_targets": {
+              "source": 0,
+              "test": 1,
+              "support": 0
+            },
+            "expansion_score": 0.5,
+            "expansion_threshold": 2.75,
+            "expansion_reasons": [
+              "high_distractor_concentration"
+            ],
+            "staged_retrieval_reasons": [],
+            "intent_reasons": [],
+            "plan_reasons": [],
+            "control_profile": {
+              "regime": "boundary",
+              "status": "safe",
+              "target_keep": 1,
+              "min_chunks": 2,
+              "contradiction_budget": 0
+            }
+          },
+          "missing_required_from_retrieval": [],
+          "retrieval_has_full_required_support": true,
+          "protected_chunk_ids": [
+            "retrieved_context[0]"
+          ],
+          "forced_protected_ids": [],
+          "final_control_metrics": {
+            "noise_rate": 1.0,
+            "contradiction_rate": 0.0,
+            "redundancy_rate": 0.0,
+            "support_ratio": 0.0,
+            "required_support_recall": 1.0,
+            "pruning_rate": 0.0
+          },
+          "final_structural_signals": {
+            "coherence": 0.0,
+            "entropy": 0.0,
+            "support": 0.0,
+            "conflict": 0.0,
+            "noise": 1.0
+          }
+        }
+      }
+    },
+    {
+      "scope": "rag",
+      "observation": {
+        "current_step": 1,
+        "input_items": 2,
+        "estimated_tokens_before": 53,
+        "dropped_irrelevant": 1,
+        "dropped_contradictions": 0,
+        "compressed_items": 0,
+        "protected_items": 1,
+        "high_relevance_items": 1
+      },
+      "decision": {
+        "kept_items": 1,
+        "estimated_tokens_after": 23,
+        "carry_forward_items": 1,
+        "strategy": "protect_then_filter_then_compress_then_select_carry_forward"
+      },
+      "actions": [
+        {
+          "type": "drop_irrelevant_context",
+          "item_id": "retrieved_context[0]",
+          "reason": "low_relevance_score"
+        }
+      ]
+    }
+  ],
+  "metrics": {
+    "initial": {
+      "noise_rate": 1.0,
+      "contradiction_rate": 0.0,
+      "redundancy_rate": 0.0,
+      "support_ratio": 0.0,
+      "required_support_recall": 1.0,
+      "pruning_rate": 0.0
+    },
+    "post_retrieval": {
+      "noise_rate": 1.0,
+      "contradiction_rate": 0.0,
+      "redundancy_rate": 0.0,
+      "support_ratio": 0.0,
+      "required_support_recall": 1.0,
+      "pruning_rate": 0.0
+    },
+    "final": {
+      "retrieved_count": 0,
+      "final_count": 0,
+      "prompt_tokens": 0,
+      "pruning_rate": 0.0,
+      "noise_rate": 1.0,
+      "contradiction_rate": 0.0,
+      "redundancy_rate": 0.0,
+      "topic_entropy": 0.0,
+      "topic_alignment": 0.0,
+      "required_support_recall": 1.0,
+      "support_chunk_count": 0,
+      "support_recall": 1.0,
+      "support_ratio": 0.0,
+      "required_chunk_hits": 0,
+      "acceptable_chunk_hits": 0,
+      "contradictory_chunk_hits": 0,
+      "off_topic_count": 0,
+      "over_pruned": false,
+      "notes": null
+    },
+    "retrieved_context_count": 1,
+    "retrieved_context_count_before_context_control": 2,
+    "retrieved_context_count_after_context_control": 1
+  },
+  "explanation": "retrieval_sufficient",
+  "scope_data": {
+    "initial_retrieved_chunks": [
+      {
+        "chunk": {
+          "chunk_id": "retrieved_context[0]",
+          "title": "retrieved_context[0]",
+          "text": "tests/test_example.py: \"\"\"Tests for the benchmark target repo.\"\"\" from __future__ import annotations import pytest from src.example import ( choose_support_channel, collect_enabled_flags, normalize_username, parse_tags, safe_divide, sanitize_f",
+          "source_type": "auto_rag_context",
+          "topic": null,
+          "version": null,
+          "tags": [],
+          "metadata": {
+            "file_path": "retrieved_context[0]",
+            "role": "test"
+          }
+        },
+        "retrieval_score": 0.0,
+        "rank": 1
+      }
+    ],
+    "stage2_retrieved_chunks": [],
+    "staged_retrieval_profile": {},
+    "retrieval_intent": {
+      "target_roles_needed": [],
+      "entity_focus_terms": [],
+      "role_specific_hints": {},
+      "narrowing_hints": [],
+      "retrieve_test_related_to": null,
+      "retrieve_support_for": null,
+      "retrieve_source_for": null,
+      "avoid_distractor_topic": null
+    },
+    "retrieval_plan": {
+      "steps": []
+    },
+    "activation": {
+      "passive_initial_top_k": 1,
+      "expansion_needed": false,
+      "staged_retrieval_recommended": false,
+      "intent_recommended": false,
+      "plan_recommended": false,
+      "expansion_reasons": [
+        "high_distractor_concentration"
+      ],
+      "staged_retrieval_reasons": [],
+      "intent_reasons": [],
+      "plan_reasons": []
+    },
+    "retrieved_chunks": [
+      {
+        "chunk": {
+          "chunk_id": "retrieved_context[0]",
+          "title": "retrieved_context[0]",
+          "text": "tests/test_example.py: \"\"\"Tests for the benchmark target repo.\"\"\" from __future__ import annotations import pytest from src.example import ( choose_support_channel, collect_enabled_flags, normalize_username, parse_tags, safe_divide, sanitize_f",
+          "source_type": "auto_rag_context",
+          "topic": null,
+          "version": null,
+          "tags": [],
+          "metadata": {
+            "file_path": "retrieved_context[0]",
+            "role": "test"
+          }
+        },
+        "retrieval_score": 0.0,
+        "rank": 1
+      }
+    ],
+    "final_chunks": [
+      {
+        "chunk": {
+          "chunk_id": "retrieved_context[0]",
+          "title": "retrieved_context[0]",
+          "text": "tests/test_example.py: \"\"\"Tests for the benchmark target repo.\"\"\" from __future__ import annotations import pytest from src.example import ( choose_support_channel, collect_enabled_flags, normalize_username, parse_tags, safe_divide, sanitize_f",
+          "source_type": "auto_rag_context",
+          "topic": null,
+          "version": null,
+          "tags": [],
+          "metadata": {
+            "file_path": "retrieved_context[0]",
+            "role": "test"
+          }
+        },
+        "retrieval_score": 0.0,
+        "optimizer_score": 24.0,
+        "rank": 1,
+        "keep_reason": "aegis_restored_test_typed_coverage"
+      }
+    ],
+    "removed_chunks": [],
+    "missing_support_recovered": false,
+    "retrieval_expansion_triggered": false,
+    "before_after_metrics": {
+      "initial": {
+        "noise_rate": 1.0,
+        "contradiction_rate": 0.0,
+        "redundancy_rate": 0.0,
+        "support_ratio": 0.0,
+        "required_support_recall": 1.0,
+        "pruning_rate": 0.0
+      },
+      "post_retrieval": {
+        "noise_rate": 1.0,
+        "contradiction_rate": 0.0,
+        "redundancy_rate": 0.0,
+        "support_ratio": 0.0,
+        "required_support_recall": 1.0,
+        "pruning_rate": 0.0
+      },
+      "final": {
+        "retrieved_count": 0,
+        "final_count": 0,
+        "prompt_tokens": 0,
+        "pruning_rate": 0.0,
+        "noise_rate": 1.0,
+        "contradiction_rate": 0.0,
+        "redundancy_rate": 0.0,
+        "topic_entropy": 0.0,
+        "topic_alignment": 0.0,
+        "required_support_recall": 1.0,
+        "support_chunk_count": 0,
+        "support_recall": 1.0,
+        "support_ratio": 0.0,
+        "required_chunk_hits": 0,
+        "acceptable_chunk_hits": 0,
+        "contradictory_chunk_hits": 0,
+        "off_topic_count": 0,
+        "over_pruned": false,
+        "notes": null
+      }
+    },
+    "observation": {
+      "query_id": "auto_rag",
+      "category": "multi_chunk_synthesis",
+      "retrieved_count": 1,
+      "required_count": 0,
+      "missing_required_chunk_ids": [],
+      "missing_failing_test_chunk_ids": [],
+      "retrieval_has_full_required_support": true,
+      "failing_test_present": false,
+      "test_dependency_risk": false,
+      "source_count": 0,
+      "test_count": 1,
+      "support_count": 0,
+      "distractor_count": 0,
+      "source_present": false,
+      "test_present": true,
+      "support_present": false,
+      "missing_source_support": false,
+      "missing_test_support": false,
+      "missing_helper_support": false,
+      "role_balance_risk": false,
+      "control_metrics": {
+        "noise_rate": 1.0,
+        "contradiction_rate": 0.0,
+        "redundancy_rate": 0.0,
+        "support_ratio": 0.0,
+        "required_support_recall": 1.0,
+        "pruning_rate": 0.0
+      },
+      "structural_signals": {
+        "coherence": 0.0,
+        "entropy": 0.0,
+        "support": 0.0,
+        "conflict": 0.0,
+        "noise": 1.0
+      },
+      "distractor_outranks_target": false,
+      "high_distractor_concentration": true,
+      "low_support_signal": false,
+      "over_pruning_risk": true
+    },
+    "decision": {
+      "retrieval_expansion_needed": false,
+      "staged_retrieval_recommended": false,
+      "intent_recommended": false,
+      "plan_recommended": false,
+      "initial_top_k": 1,
+      "expanded_top_k": 1,
+      "support_floor": 1,
+      "target_keep": 1,
+      "contradiction_budget": 0,
+      "rationale": "retrieval_sufficient",
+      "diagnostic_role_targets": [
+        "test"
+      ],
+      "typed_evidence_targets": {
+        "source": 0,
+        "test": 1,
+        "support": 0
+      },
+      "expansion_score": 0.5,
+      "expansion_threshold": 2.75,
+      "expansion_reasons": [
+        "high_distractor_concentration"
+      ],
+      "staged_retrieval_reasons": [],
+      "intent_reasons": [],
+      "plan_reasons": [],
+      "control_profile": {
+        "regime": "boundary",
+        "status": "safe",
+        "target_keep": 1,
+        "min_chunks": 2,
+        "contradiction_budget": 0
+      },
+      "policy": "best_score"
+    },
+    "optimization_result": {
+      "selected_chunks": [
+        {
+          "chunk": {
+            "chunk_id": "retrieved_context[0]",
+            "title": "retrieved_context[0]",
+            "text": "tests/test_example.py: \"\"\"Tests for the benchmark target repo.\"\"\" from __future__ import annotations import pytest from src.example import ( choose_support_channel, collect_enabled_flags, normalize_username, parse_tags, safe_divide, sanitize_f",
+            "source_type": "auto_rag_context",
+            "topic": null,
+            "version": null,
+            "tags": [],
+            "metadata": {
+              "file_path": "retrieved_context[0]",
+              "role": "test"
+            }
+          },
+          "retrieval_score": 0.0,
+          "optimizer_score": 24.0,
+          "rank": 1,
+          "keep_reason": "aegis_restored_test_typed_coverage"
+        }
+      ],
+      "removed_chunks": [],
+      "before_count": 1,
+      "after_count": 1,
+      "control_metrics": {
+        "retrieved_count": 0,
+        "final_count": 0,
+        "prompt_tokens": 0,
+        "pruning_rate": 0.0,
+        "noise_rate": 1.0,
+        "contradiction_rate": 0.0,
+        "redundancy_rate": 0.0,
+        "topic_entropy": 0.0,
+        "topic_alignment": 0.0,
+        "required_support_recall": 1.0,
+        "support_chunk_count": 0,
+        "support_recall": 1.0,
+        "support_ratio": 0.0,
+        "required_chunk_hits": 0,
+        "acceptable_chunk_hits": 0,
+        "contradictory_chunk_hits": 0,
+        "off_topic_count": 0,
+        "over_pruned": false,
+        "notes": null
+      },
+      "structural_signals": {
+        "coherence": 0.0,
+        "entropy": 0.0,
+        "support": 0.0,
+        "conflict": 0.0,
+        "noise": 1.0
+      },
+      "observability": {
+        "initial_control_metrics": {
+          "noise_rate": 1.0,
+          "contradiction_rate": 0.0,
+          "redundancy_rate": 0.0,
+          "support_ratio": 0.0,
+          "required_support_recall": 1.0,
+          "pruning_rate": 0.0
+        },
+        "initial_structural_signals": {
+          "coherence": 0.0,
+          "entropy": 0.0,
+          "support": 0.0,
+          "conflict": 0.0,
+          "noise": 1.0
+        },
+        "control_decision": {
+          "retrieval_expansion_needed": false,
+          "staged_retrieval_recommended": false,
+          "intent_recommended": false,
+          "plan_recommended": false,
+          "initial_top_k": 1,
+          "expanded_top_k": 1,
+          "support_floor": 1,
+          "target_keep": 1,
+          "contradiction_budget": 0,
+          "rationale": "retrieval_sufficient",
+          "diagnostic_role_targets": [
+            "test"
+          ],
+          "typed_evidence_targets": {
+            "source": 0,
+            "test": 1,
+            "support": 0
+          },
+          "expansion_score": 0.5,
+          "expansion_threshold": 2.75,
+          "expansion_reasons": [
+            "high_distractor_concentration"
+          ],
+          "staged_retrieval_reasons": [],
+          "intent_reasons": [],
+          "plan_reasons": [],
+          "control_profile": {
+            "regime": "boundary",
+            "status": "safe",
+            "target_keep": 1,
+            "min_chunks": 2,
+            "contradiction_budget": 0
+          }
+        },
+        "missing_required_from_retrieval": [],
+        "retrieval_has_full_required_support": true,
+        "protected_chunk_ids": [
+          "retrieved_context[0]"
+        ],
+        "forced_protected_ids": [],
+        "final_control_metrics": {
+          "noise_rate": 1.0,
+          "contradiction_rate": 0.0,
+          "redundancy_rate": 0.0,
+          "support_ratio": 0.0,
+          "required_support_recall": 1.0,
+          "pruning_rate": 0.0
+        },
+        "final_structural_signals": {
+          "coherence": 0.0,
+          "entropy": 0.0,
+          "support": 0.0,
+          "conflict": 0.0,
+          "noise": 1.0
+        }
+      }
+    },
+    "internal_controls": {
+      "context": {
+        "input_items": 2,
+        "kept_items": 1,
+        "dropped_irrelevant": 1,
+        "dropped_contradictions": 0,
+        "compressed_items": 0,
+        "protected_items": 1,
+        "estimated_tokens_before": 53,
+        "estimated_tokens_after": 23,
+        "kept_item_ids": [
+          "retrieved_context[1]"
+        ],
+        "dropped_item_ids": [
+          "retrieved_context[0]"
+        ],
+        "protected_item_ids": [
+          "retrieved_context[1]"
+        ],
+        "compressed_item_ids": [],
+        "contradictory_item_ids": [],
+        "high_relevance_item_ids": [
+          "retrieved_context[1]"
+        ],
+        "carry_forward_ids": [
+          "retrieved_context[1]"
+        ],
+        "discarded_candidate_ids": [
+          "retrieved_context[0]"
+        ],
+        "critical_context_ids": [
+          "retrieved_context[1]"
+        ],
+        "dropped_roles": {
+          "tool": 1
+        },
+        "kept_roles": {
+          "tool": 1
+        },
+        "message_count": 0,
+        "tool_count": 1,
+        "summary_count": 0
+      }
+    },
+    "query": "Normalize usernames with underscores. Fix normalize_username so internal spaces become underscores while still trimming and lowercasing.. Search focus: normalize_username | underscores | spaces",
+    "retrieved_context": [
+      "tests/test_example.py: \"\"\"Tests for the benchmark target repo.\"\"\" from __future__ import annotations import pytest from src.example import ( choose_support_channel, collect_enabled_flags, normalize_username, parse_tags, safe_divide, sanitize_f"
+    ],
+    "carry_forward_context": [
+      {
+        "id": "retrieved_context[1]",
+        "chunk_id": "retrieved_context[1]",
+        "content": "tests/test_example.py: \"\"\"Tests for the benchmark target repo.\"\"\" from __future__ import annotations import pytest from src.example import ( choose_support_channel, collect_enabled_flags, normalize_username, parse_tags, safe_divide, sanitize_f",
+        "relevance_score": 0.85,
+        "is_contradictory": false,
+        "source": "tool",
+        "title": "retrieved_context[1]",
+        "role": "test",
+        "protected": true,
+        "topic": null,
+        "tags": [],
+        "metadata": {}
+      }
+    ],
+    "structured_carry_forward_context": {
+      "critical": [
+        {
+          "id": "retrieved_context[1]",
+          "chunk_id": "retrieved_context[1]",
+          "content": "tests/test_example.py: \"\"\"Tests for the benchmark target repo.\"\"\" from __future__ import annotations import pytest from src.example import ( choose_support_channel, collect_enabled_flags, normalize_username, parse_tags, safe_divide, sanitize_f",
+          "relevance_score": 0.85,
+          "is_contradictory": false,
+          "source": "tool",
+          "title": "retrieved_context[1]",
+          "role": "test",
+          "protected": true,
+          "topic": null,
+          "tags": [],
+          "metadata": {}
+        }
+      ],
+      "supporting": [],
+      "optional": []
+    },
+    "public_rag_runtime": {
+      "controller": "rag_v2_runtime_control",
+      "initial_top_k": 1,
+      "expanded_top_k": 1
+    }
+  },
+  "fallback": false
+}

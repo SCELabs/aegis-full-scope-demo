@@ -4,6 +4,25 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 
+AEGIS_SCOPES: tuple[str, ...] = ("rag", "llm", "step", "context", "agent")
+
+
+def scope_counter_template() -> dict[str, int]:
+    return {scope: 0 for scope in AEGIS_SCOPES}
+
+
+def scope_usage_from_counts(*, live_counts: dict[str, int], fallback_counts: dict[str, int]) -> dict[str, str]:
+    usage: dict[str, str] = {}
+    for scope in AEGIS_SCOPES:
+        if fallback_counts.get(scope, 0) > 0:
+            usage[scope] = "fallback"
+        elif live_counts.get(scope, 0) > 0:
+            usage[scope] = "live"
+        else:
+            usage[scope] = "not_called"
+    return usage
+
+
 @dataclass
 class TaskSpec:
     id: str
@@ -37,9 +56,9 @@ class TaskMetrics:
     repair_attempts: int = 0
     control_actions_applied: int = 0
 
-    per_scope_action_counts: dict[str, int] = field(default_factory=lambda: {"rag": 0, "llm": 0, "step": 0})
-    per_scope_fallback_counts: dict[str, int] = field(default_factory=lambda: {"rag": 0, "llm": 0, "step": 0})
-    per_scope_live_counts: dict[str, int] = field(default_factory=lambda: {"rag": 0, "llm": 0, "step": 0})
+    per_scope_action_counts: dict[str, int] = field(default_factory=scope_counter_template)
+    per_scope_fallback_counts: dict[str, int] = field(default_factory=scope_counter_template)
+    per_scope_live_counts: dict[str, int] = field(default_factory=scope_counter_template)
 
     retrieved_candidate_count: int = 0
     retrieved_kept_count: int = 0

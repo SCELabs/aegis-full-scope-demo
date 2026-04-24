@@ -1,0 +1,105 @@
+{
+  "scope": "context",
+  "actions": [],
+  "trace": [
+    {
+      "scope": "context",
+      "observation": {
+        "current_step": 1,
+        "input_items": 1,
+        "estimated_tokens_before": 17,
+        "dropped_irrelevant": 0,
+        "dropped_contradictions": 0,
+        "compressed_items": 0,
+        "protected_items": 0,
+        "high_relevance_items": 1
+      },
+      "decision": {
+        "kept_items": 1,
+        "estimated_tokens_after": 17,
+        "carry_forward_items": 1,
+        "strategy": "protect_then_filter_then_compress_then_select_carry_forward"
+      },
+      "actions": []
+    }
+  ],
+  "metrics": {
+    "input_message_count": 1,
+    "input_tool_result_count": 3,
+    "output_message_count": 1,
+    "output_tool_result_count": 0,
+    "carry_forward_count": 1
+  },
+  "explanation": "",
+  "scope_data": {
+    "internal_controls": {
+      "context": {
+        "input_items": 1,
+        "kept_items": 1,
+        "dropped_irrelevant": 0,
+        "dropped_contradictions": 0,
+        "compressed_items": 0,
+        "protected_items": 0,
+        "estimated_tokens_before": 17,
+        "estimated_tokens_after": 17,
+        "kept_item_ids": [
+          "msg_1"
+        ],
+        "dropped_item_ids": [],
+        "protected_item_ids": [],
+        "compressed_item_ids": [],
+        "contradictory_item_ids": [],
+        "high_relevance_item_ids": [
+          "msg_1"
+        ],
+        "carry_forward_ids": [
+          "msg_1"
+        ],
+        "discarded_candidate_ids": [],
+        "critical_context_ids": [
+          "msg_1"
+        ],
+        "dropped_roles": {},
+        "kept_roles": {
+          "message": 1
+        },
+        "message_count": 1,
+        "tool_count": 0,
+        "summary_count": 0
+      }
+    },
+    "carry_forward_context": [
+      {
+        "id": "msg_1",
+        "role": "user",
+        "content": "Escalate blocked security alerts: Fix route_alert so blocked high-priority security alerts route to incident-war-room instead of priority-ops.",
+        "relevance_score": 1.0,
+        "protected": false,
+        "context_origin": "message",
+        "context_age": 0,
+        "decay_applied": false,
+        "collision_with_active_input": false,
+        "collision_reason": null
+      }
+    ],
+    "structured_carry_forward_context": {
+      "critical": [
+        {
+          "id": "msg_1",
+          "role": "user",
+          "content": "Escalate blocked security alerts: Fix route_alert so blocked high-priority security alerts route to incident-war-room instead of priority-ops.",
+          "relevance_score": 1.0,
+          "protected": false,
+          "context_origin": "message",
+          "context_age": 0,
+          "decay_applied": false,
+          "collision_with_active_input": false,
+          "collision_reason": null
+        }
+      ],
+      "supporting": [],
+      "optional": []
+    }
+  },
+  "fallback": false
+}
